@@ -5,6 +5,7 @@ import { calcularAjusteForca } from "../../util/funcoes-forca";
 
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
+import { fetchAlinhamentos } from "../../service/alinhamento-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -68,9 +69,9 @@ export default class Ficha extends Component {
       espectro: 0,
       vampiro: 0,
 
-      alinhamentos: ["Ordeiro", "Neutro", "Caótico"],
-      classes: [], //["Clérigo", "Homem de armas", "Ladrão", "Mago"],
-      racas: [], //["Anão", "Elfo", "Halfling", "Humano"],
+      alinhamentos: [], 
+      classes: [], 
+      racas: [], 
       niveis: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
       dados: [
         "3",
@@ -94,13 +95,10 @@ export default class Ficha extends Component {
   }
 
   componentDidMount() {
-    this.getRacas();
-  }
-
-  getRacas = () => {
     fetchRacas().then(res => this.setState({ racas: res.data }));
     fetchClasses().then(res => this.setState({ classes: res.data }));
-  };
+    fetchAlinhamentos().then(res => this.setState({ alinhamentos: res.data }));
+  }
 
   onFormSubmit = event => {
     event.preventDefault();
@@ -182,8 +180,8 @@ export default class Ficha extends Component {
                   onChange={e => this.setState({ alinhamento: e.target.value })}
                 >
                   <option>-- </option>
-                  {this.state.alinhamentos.map(item => (
-                    <option key={item}>{item}</option>
+                  {this.state.alinhamentos.map(alinhamento => (
+                    <option key={alinhamento.id}>{alinhamento.nome}</option>
                   ))}
                 </Form.Control>
               </Form.Group>
