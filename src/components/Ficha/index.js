@@ -4,6 +4,7 @@ import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
 import { calcularAjusteForca } from "../../util/funcoes-forca";
 
 import { fetchRacas } from "../../service/raca-api";
+import { fetchClasses } from "../../service/classe-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -68,7 +69,7 @@ export default class Ficha extends Component {
       vampiro: 0,
 
       alinhamentos: ["Ordeiro", "Neutro", "Caótico"],
-      classes: ["Clérigo", "Homem de armas", "Ladrão", "Mago"],
+      classes: [], //["Clérigo", "Homem de armas", "Ladrão", "Mago"],
       racas: [], //["Anão", "Elfo", "Halfling", "Humano"],
       niveis: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
       dados: [
@@ -93,11 +94,13 @@ export default class Ficha extends Component {
   }
 
   componentDidMount() {
-    let racas = undefined;
-    fetchRacas().then(res => (racas = res));
-    console.log(racas)
-    this.setState({ racas: racas });
+    this.getRacas();
   }
+
+  getRacas = () => {
+    fetchRacas().then(res => this.setState({ racas: res.data }));
+    fetchClasses().then(res => this.setState({ classes: res.data }));
+  };
 
   onFormSubmit = event => {
     event.preventDefault();
@@ -196,8 +199,8 @@ export default class Ficha extends Component {
                   onChange={e => this.setState({ raca: e.target.value })}
                 >
                   <option>-- </option>
-                  {this.state.racas.map(item => (
-                    <option key={item}>{item}</option>
+                  {this.state.racas.map(raca => (
+                    <option key={raca.id}>{raca.nome}</option>
                   ))}
                 </Form.Control>
               </Form.Group>
@@ -211,8 +214,8 @@ export default class Ficha extends Component {
                   onChange={e => this.setState({ classe: e.target.value })}
                 >
                   <option>-- </option>
-                  {this.state.classes.map(item => (
-                    <option key={item}>{item}</option>
+                  {this.state.classes.map(classe => (
+                    <option key={classe.id}>{classe.nome}</option>
                   ))}
                 </Form.Control>
               </Form.Group>
