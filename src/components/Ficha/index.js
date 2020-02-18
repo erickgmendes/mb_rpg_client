@@ -6,6 +6,8 @@ import { calcularAjusteForca } from "../../util/funcoes-forca";
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
 import { fetchAlinhamentos } from "../../service/alinhamento-api";
+import { fetchNiveis } from "../../service/nivel-api";
+import { fetchRolagemDados } from "../../service/rolagem-dados-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -72,25 +74,8 @@ export default class Ficha extends Component {
       alinhamentos: [], 
       classes: [], 
       racas: [], 
-      niveis: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-      dados: [
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18"
-      ]
+      niveis: [],
+      rolagemDados: []
     };
   }
 
@@ -98,6 +83,8 @@ export default class Ficha extends Component {
     fetchRacas().then(res => this.setState({ racas: res.data }));
     fetchClasses().then(res => this.setState({ classes: res.data }));
     fetchAlinhamentos().then(res => this.setState({ alinhamentos: res.data }));
+    this.setState({ niveis: fetchNiveis() });
+    this.setState({ rolagemDados: fetchRolagemDados() });
   }
 
   onFormSubmit = event => {
@@ -240,7 +227,7 @@ export default class Ficha extends Component {
                   value={this.state.forca}
                   onChange={this.onChangeForca}
                 >
-                  {this.state.dados.map(item => (
+                  {this.state.rolagemDados.map(item => (
                     <option key={item}>{item}</option>
                   ))}
                 </Form.Control>
@@ -251,10 +238,10 @@ export default class Ficha extends Component {
                 <Form.Label>Destreza</Form.Label>
                 <Form.Control
                   as="select"
-                  value={this.state.destreza}
+                  defaultValue={this.state.destreza}
                   onChange={this.onChangeDestreza}
                 >
-                  {this.state.dados.map(item => (
+                  {this.state.rolagemDados.map(item => (
                     <option key={item}>{item}</option>
                   ))}
                 </Form.Control>
@@ -265,10 +252,10 @@ export default class Ficha extends Component {
                 <Form.Label>Constituição</Form.Label>
                 <Form.Control
                   as="select"
-                  value={this.state.constituicao}
+                  defaultValue={this.state.constituicao}
                   onChange={this.onChangeConstituicao}
                 >
-                  {this.state.dados.map(item => (
+                  {this.state.rolagemDados.map(item => (
                     <option key={item}>{item}</option>
                   ))}
                 </Form.Control>
@@ -279,10 +266,10 @@ export default class Ficha extends Component {
                 <Form.Label>Inteligência</Form.Label>
                 <Form.Control
                   as="select"
-                  value={this.state.inteligencia}
+                  defaultValue={this.state.inteligencia}
                   onChange={this.onChangeInteligencia}
                 >
-                  {this.state.dados.map(item => (
+                  {this.state.rolagemDados.map(item => (
                     <option key={item}>{item}</option>
                   ))}
                 </Form.Control>
@@ -293,10 +280,10 @@ export default class Ficha extends Component {
                 <Form.Label>Sabedoria</Form.Label>
                 <Form.Control
                   as="select"
-                  value={this.state.sabedoria}
+                  defaultValue={this.state.sabedoria}
                   onChange={this.onChangeSabedoria}
                 >
-                  {this.state.dados.map(item => (
+                  {this.state.rolagemDados.map(item => (
                     <option key={item}>{item}</option>
                   ))}
                 </Form.Control>
@@ -307,10 +294,10 @@ export default class Ficha extends Component {
                 <Form.Label>Carisma</Form.Label>
                 <Form.Control
                   as="select"
-                  value={this.state.carisma}
+                  defaultValue={this.state.carisma}
                   onChange={this.onChangecarisma}
                 >
-                  {this.state.dados.map(item => (
+                  {this.state.rolagemDados.map(item => (
                     <option key={item}>{item}</option>
                   ))}
                 </Form.Control>
