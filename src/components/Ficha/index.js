@@ -3,6 +3,10 @@ import React, { Component } from "react";
 import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
 import { calcularAjusteForca } from "../../util/funcoes-forca";
 
+import TextBox from "../TextBox";
+import DisabledTextBox from "../DisabledTextBox";
+import ComboBox from "../ComboBox";
+
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
 import { fetchAlinhamentos } from "../../service/alinhamento-api";
@@ -71,9 +75,9 @@ export default class Ficha extends Component {
       espectro: 0,
       vampiro: 0,
 
-      alinhamentos: [], 
-      classes: [], 
-      racas: [], 
+      alinhamentos: [],
+      classes: [],
+      racas: [],
       niveis: [],
       rolagemDados: []
     };
@@ -124,184 +128,114 @@ export default class Ficha extends Component {
           <hr />
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Nome do Personagem</Form.Label>
-                <Form.Control
-                  value={this.state.nomePersonagem}
-                  onChange={e =>
-                    this.setState({ nomePersonagem: e.target.value })
-                  }
-                />
-              </Form.Group>
+              <TextBox
+                label="Nome do Personagem"
+                value={this.state.nomePersonagem}
+                onChange={e =>
+                  this.setState({ nomePersonagem: e.target.value })
+                }
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Nome do Jogador</Form.Label>
-                <Form.Control
-                  value={this.state.nomeJogador}
-                  onChange={e => this.setState({ nomeJogador: e.target.value })}
-                />
-              </Form.Group>
+              <TextBox
+                label="Nome do Jogador"
+                value={this.state.nomeJogador}
+                onChange={e => this.setState({ nomeJogador: e.target.value })}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Nível</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.nivel}
-                  onChange={e => this.setState({ nivel: e.target.value })}
-                >
-                  <option>-- </option>
-                  {this.state.niveis.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Nível"
+                value={this.state.nivel}
+                onChange={e => this.setState({ nivel: e.target.value })}
+                lista={this.state.niveis}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Alinhamento</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.alinhamento}
-                  onChange={e => this.setState({ alinhamento: e.target.value })}
-                >
-                  <option>-- </option>
-                  {this.state.alinhamentos.map(alinhamento => (
-                    <option key={alinhamento.id}>{alinhamento.nome}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Alinhamento"
+                value={this.state.alinhamento}
+                onChange={e => this.setState({ alinhamento: e.target.value })}
+                lista={this.state.alinhamentos}
+              />
             </Col>
           </Row>
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Raça</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.raca}
-                  onChange={e => this.setState({ raca: e.target.value })}
-                >
-                  <option>-- </option>
-                  {this.state.racas.map(raca => (
-                    <option key={raca.id}>{raca.nome}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Raça"
+                value={this.state.raca}
+                onChange={e => this.setState({ raca: e.target.value })}
+                lista={this.state.racas}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Classe</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.classe}
-                  onChange={e => this.setState({ classe: e.target.value })}
-                >
-                  <option>-- </option>
-                  {this.state.classes.map(classe => (
-                    <option key={classe.id}>{classe.nome}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Classe"
+                value={this.state.classe}
+                onChange={e => this.setState({ classe: e.target.value })}
+                lista={this.state.classes}
+              />
             </Col>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>Características Físicas</Form.Label>
-                <Form.Control
-                  value={this.state.caracteristicasFisicas}
-                  onChange={e =>
-                    this.setState({ caracteristicasFisicas: e.target.value })
-                  }
-                />
-              </Form.Group>
+              <TextBox
+                label="Características Físicas"
+                value={this.state.caracteristicasFisicas}
+                onChange={e =>
+                  this.setState({ caracteristicasFisicas: e.target.value })
+                }
+              />
             </Col>
           </Row>
 
           <Row>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Força</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.forca}
-                  onChange={this.onChangeForca}
-                >
-                  {this.state.rolagemDados.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Força"
+                value={this.state.forca}
+                onChange={this.onChangeForca}
+                lista={this.state.rolagemDados}
+              />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Destreza</Form.Label>
-                <Form.Control
-                  as="select"
-                  defaultValue={this.state.destreza}
-                  onChange={this.onChangeDestreza}
-                >
-                  {this.state.rolagemDados.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Destreza"
+                value={this.state.destreza}
+                onChange={this.onChangeDestreza}
+                lista={this.state.rolagemDados}
+              />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Constituição</Form.Label>
-                <Form.Control
-                  as="select"
-                  defaultValue={this.state.constituicao}
-                  onChange={this.onChangeConstituicao}
-                >
-                  {this.state.rolagemDados.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Constituição"
+                value={this.state.constituicao}
+                onChange={this.onChangeConstituicao}
+                lista={this.state.rolagemDados}
+              />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Inteligência</Form.Label>
-                <Form.Control
-                  as="select"
-                  defaultValue={this.state.inteligencia}
-                  onChange={this.onChangeInteligencia}
-                >
-                  {this.state.rolagemDados.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Inteligência"
+                value={this.state.inteligencia}
+                onChange={this.onChangeInteligencia}
+                lista={this.state.rolagemDados}
+              />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Sabedoria</Form.Label>
-                <Form.Control
-                  as="select"
-                  defaultValue={this.state.sabedoria}
-                  onChange={this.onChangeSabedoria}
-                >
-                  {this.state.rolagemDados.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Sabedoria"
+                value={this.state.sabedoria}
+                onChange={this.onChangeSabedoria}
+                lista={this.state.rolagemDados}
+              />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Carisma</Form.Label>
-                <Form.Control
-                  as="select"
-                  defaultValue={this.state.carisma}
-                  onChange={this.onChangecarisma}
-                >
-                  {this.state.rolagemDados.map(item => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              <ComboBox
+                label="Carisma"
+                value={this.state.carisma}
+                onChange={this.onChangeCarisma}
+                lista={this.state.rolagemDados}
+              />
             </Col>
           </Row>
 
@@ -310,10 +244,10 @@ export default class Ficha extends Component {
           <h5>Força</h5>
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Ajuste de ataque e dano</Form.Label>
-                <Form.Control disabled value={this.state.forcaAjuste} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ajuste de ataque e dano"
+                value={this.state.forcaAjuste}
+              />
             </Col>
             <Col sm={3}>
               <Form.Group>
