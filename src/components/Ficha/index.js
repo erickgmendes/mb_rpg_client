@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
-import { calcularAjusteForca } from "../../util/funcoes-forca";
+//import { calcularAjusteForca } from "../../util/funcoes-forca";
 
 import TextBox from "../TextBox";
 import DisabledTextBox from "../DisabledTextBox";
@@ -19,6 +19,7 @@ import { fetchClasses } from "../../service/classe-api";
 import { fetchAlinhamentos } from "../../service/alinhamento-api";
 import { fetchNiveis } from "../../service/nivel-api";
 import { fetchRolagemDados } from "../../service/rolagem-dados-api";
+import { fetchCalculoAtributoForca } from "../../service/calculos-atributo-forca-ajuste";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -34,10 +35,12 @@ export default class Ficha extends Component {
       caracteristicasFisicas: "",
 
       forca: 0,
-      forcaAjuste: -5,
-      cargaLeve: "0",
-      cargaPesada: "0",
-      cargaMaxima: "0",
+      calculosAtributoForca: {
+        forcaAjuste: -5,
+        cargaLeve: "0",
+        cargaPesada: "0",
+        cargaMaxima: "0"
+      },
 
       destreza: "0",
       destrezaAjuste: "0",
@@ -98,6 +101,10 @@ export default class Ficha extends Component {
     fetchAlinhamentos().then(res => this.setState({ alinhamentos: res.data }));
     this.setState({ niveis: fetchNiveis() });
     this.setState({ rolagemDados: fetchRolagemDados() });
+
+    fetchCalculoAtributoForca(this.state.forca).then(res =>
+      this.setState({ calculosAtributoForca: res.data })
+    );
   }
 
   onFormSubmit = event => {
@@ -107,10 +114,12 @@ export default class Ficha extends Component {
 
   onChangeForca = event => {
     const valor = event.target.value;
-    this.setState({ forca: valor });
 
-    let ajuste = calcularAjusteForca(valor);
-    this.setState({ forcaAjuste: ajuste });
+    fetchCalculoAtributoForca(valor).then(res =>
+      this.setState({ calculosAtributoForca: res.data })
+    );
+
+    this.setState({ forca: valor });
   };
 
   /*onChangeDestreza = (event) => {
@@ -255,7 +264,7 @@ export default class Ficha extends Component {
             <Col sm={3}>
               <DisabledTextBox
                 label="Ajuste de ataque e dano"
-                value={this.state.forcaAjuste}
+                value={this.state.calculosAtributoForca.ajuste}
               />
             </Col>
             <Col sm={3}>

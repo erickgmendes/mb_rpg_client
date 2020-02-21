@@ -10,8 +10,7 @@ const ComboBox = props => (
         as="select"
         defaultValue={props.value}
         onChange={props.onChange}
-      >
-        <option>-- </option>
+      >        
         {props.lista.map(item => (
           <option key={item.id}>{item.nome}</option>
         ))}
