@@ -1,11 +1,18 @@
 import React, { Component } from "react";
 
-import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
+import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import { calcularAjusteForca } from "../../util/funcoes-forca";
 
 import TextBox from "../TextBox";
 import DisabledTextBox from "../DisabledTextBox";
 import ComboBox from "../ComboBox";
+import TableArmas from "../TableArmas";
+import TableEquipamentos from "../TableEquipamentos";
+import TableAcessoMagia from "../TableAcessoMagia";
+import TableIdiomas from "../TableIdiomas";
+import TableDinheiro from "../TableDinheiro";
+import TableControleMagias from "../TableControleMagias";
+import TableListaMagias from "../TableListaMagias";
 
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
@@ -65,6 +72,8 @@ export default class Ficha extends Component {
       listaEquipamentos: [],
       listaIdiomas: [],
       listaMagias: [],
+      listaAcessoMagia: [],
+      listaDinheiro: [],
 
       esqueleto: 0,
       zumbi: 0,
@@ -250,473 +259,233 @@ export default class Ficha extends Component {
               />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Carga leve</Form.Label>
-                <Form.Control disabled value={this.state.cargaLeve} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Carga leve"
+                value={this.state.cargaLeve}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Carga pesada</Form.Label>
-                <Form.Control disabled value={this.state.cargaPesada} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Carga pesada"
+                value={this.state.cargaPesada}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Carga máxima</Form.Label>
-                <Form.Control disabled value={this.state.cargaMaxima} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Carga máxima"
+                value={this.state.cargaMaxima}
+              />
             </Col>
           </Row>
 
           <h5>Destreza</h5>
           <Row>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>Ajustes</Form.Label>
-                <Form.Control disabled value={this.state.destrezaAjuste} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ajustes"
+                value={this.state.destrezaAjuste}
+              />
             </Col>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>Talentos Ladinos</Form.Label>
-                <Form.Control disabled value={this.state.talentosLadinos} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Talentos Ladinos"
+                value={this.state.talentosLadinos}
+              />
             </Col>
           </Row>
 
           <h5>Constituição</h5>
           <Row>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>Ajuste PV e Proteção</Form.Label>
-                <Form.Control disabled value={this.state.constituicaoAjuste} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ajuste PV e Proteção"
+                value={this.state.constituicaoAjuste}
+              />
             </Col>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>% Ressurreição</Form.Label>
-                <Form.Control
-                  disabled
-                  value={this.state.percentualRessurreicao}
-                />
-              </Form.Group>
+              <DisabledTextBox
+                label="% Ressurreição"
+                value={this.state.percentualRessurreicao}
+              />
             </Col>
           </Row>
 
           <h5>Inteligência</h5>
           <Row>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>Idiomas</Form.Label>
-                <Form.Control disabled value={this.state.idiomas} />
-              </Form.Group>
+              <DisabledTextBox label="Idiomas" value={this.state.idiomas} />
             </Col>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>% Aprender Magia</Form.Label>
-                <Form.Control
-                  disabled
-                  value={this.state.percentualAprenderMagia}
-                />
-              </Form.Group>
+              <DisabledTextBox
+                label="% Aprender Magia"
+                value={this.state.percentualAprenderMagia}
+              />
             </Col>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>Magias Adicionais</Form.Label>
-                <Form.Control
-                  disabled
-                  value={this.state.inteligenciaMagiasAdicionais}
-                />
-              </Form.Group>
+              <DisabledTextBox
+                label="Magias Adicionais"
+                value={this.state.inteligenciaMagiasAdicionais}
+              />
             </Col>
           </Row>
 
           <h5>Sabedoria</h5>
           <Row>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>Ajuste de Proteção</Form.Label>
-                <Form.Control disabled value={this.state.constituicaoAjuste} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ajuste de Proteção"
+                value={this.state.constituicaoAjuste}
+              />
             </Col>
             <Col sm={6}>
-              <Form.Group>
-                <Form.Label>Magias Adicionais</Form.Label>
-                <Form.Control
-                  disabled
-                  value={this.state.percentualRessurreicao}
-                />
-              </Form.Group>
+              <DisabledTextBox
+                label="Magias Adicionais"
+                value={this.state.percentualRessurreicao}
+              />
             </Col>
           </Row>
 
           <h5>Carisma</h5>
           <Row>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>Nº Seguidores</Form.Label>
-                <Form.Control disabled value={this.state.numeroSeguidores} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Nº Seguidores"
+                value={this.state.numeroSeguidores}
+              />
             </Col>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>Ajuste Reação</Form.Label>
-                <Form.Control disabled value={this.state.carismaAjuste} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ajuste Reação"
+                value={this.state.carismaAjuste}
+              />
             </Col>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>Mortos-Vivos</Form.Label>
-                <Form.Control disabled value={this.state.mortosVivos} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Mortos-Vivos"
+                value={this.state.mortosVivos}
+              />
             </Col>
           </Row>
 
           <h5>Sub-Atributos</h5>
           <Row>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Classe de Armadura</Form.Label>
-                <Form.Control disabled value={this.state.ca} />
-              </Form.Group>
+              <DisabledTextBox label="Classe Armadura" value={this.state.ca} />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Bônus de Armadura</Form.Label>
-                <Form.Control disabled value={this.state.ba} />
-              </Form.Group>
+              <DisabledTextBox label="Bônus Armadura" value={this.state.ba} />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Jogada de Proteção</Form.Label>
-                <Form.Control disabled value={this.state.jp} />
-              </Form.Group>
+              <DisabledTextBox label="Jogada Proteção" value={this.state.jp} />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Pontos de Vida</Form.Label>
-                <Form.Control disabled value={this.state.pv} />
-              </Form.Group>
+              <DisabledTextBox label="Pontos de Vida" value={this.state.pv} />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Movimento</Form.Label>
-                <Form.Control disabled value={this.state.movimento} />
-              </Form.Group>
+              <DisabledTextBox label="Movimento" value={this.state.movimento} />
             </Col>
             <Col sm={2}>
-              <Form.Group>
-                <Form.Label>XP Atual</Form.Label>
-                <Form.Control disabled value={this.state.xp} />
-              </Form.Group>
+              <DisabledTextBox label="XP Atual" value={this.state.xp} />
             </Col>
           </Row>
-
-          <h5>Armas</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Nome Arma</th>
-                <th>Iniciativa</th>
-                <th>BA Total</th>
-                <th>Dano</th>
-                <th>Alcance</th>
-                <th>Tamanho</th>
-                <th>Peso</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.listaArmas.map(item => (
-                <tr>
-                  <td>1</td>
-                  <td>Table cell</td>
-                  <td>Table cell</td>
-                  <td>Table cell</td>
-                  <td>Table cell</td>
-                  <td>Table cell</td>
-                  <td>Table cell</td>
-                  <td>Table cell</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          <h5>Equipamentos</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Nome Equipamento</th>
-                <th>Peso</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.listaArmas.map(item => (
-                <tr>
-                  <td>1</td>
-                  <td>Table cell</td>
-                  <td>0</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          <h5>Acesso a Magia</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>1º Círculo</th>
-                <th>2º Círculo</th>
-                <th>3º Círculo</th>
-                <th>4º Círculo</th>
-                <th>5º Círculo</th>
-                <th>6º Círculo</th>
-                <th>7º Círculo</th>
-                <th>8º Círculo</th>
-                <th>9º Círculo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-              </tr>
-            </tbody>
-          </Table>
 
           <h5>Expulsar Mortos</h5>
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Esqueleto</Form.Label>
-                <Form.Control disabled value={this.state.esqueleto} />
-              </Form.Group>
+              <DisabledTextBox label="Esqueleto" value={this.state.esqueleto} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Zumbi</Form.Label>
-                <Form.Control disabled value={this.state.zumbi} />
-              </Form.Group>
+              <DisabledTextBox label="Zumbi" value={this.state.zumbi} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Carniçal</Form.Label>
-                <Form.Control disabled value={this.state.carnical} />
-              </Form.Group>
+              <DisabledTextBox label="Carniçal" value={this.state.carnical} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Inumano</Form.Label>
-                <Form.Control disabled value={this.state.inumano} />
-              </Form.Group>
+              <DisabledTextBox label="Inumano" value={this.state.inumano} />
             </Col>
           </Row>
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Aparição</Form.Label>
-                <Form.Control disabled value={this.state.aparicao} />
-              </Form.Group>
+              <DisabledTextBox label="Aparição" value={this.state.aparicao} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Múmia</Form.Label>
-                <Form.Control disabled value={this.state.mumia} />
-              </Form.Group>
+              <DisabledTextBox label="Múmia" value={this.state.mumia} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Espectro</Form.Label>
-                <Form.Control disabled value={this.state.espectro} />
-              </Form.Group>
+              <DisabledTextBox label="Espectro" value={this.state.espectro} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Vampiro</Form.Label>
-                <Form.Control disabled value={this.state.vampiro} />
-              </Form.Group>
+              <DisabledTextBox label="Vampiro" value={this.state.vampiro} />
             </Col>
           </Row>
 
           <h5>Talentos Ladinos</h5>
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Abrir fechaduras</Form.Label>
-                <Form.Control disabled value={this.state.abrirFechaduras} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Abrir fechaduras"
+                value={this.state.abrirFechaduras}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Reconhecer e desarmar armadilhas</Form.Label>
-                <Form.Control
-                  disabled
-                  value={this.state.reconhecerDesarmarArmadilhas}
-                />
-              </Form.Group>
+              <DisabledTextBox
+                label="Reconhecer e desarmar armadilhas"
+                value={this.state.reconhecerDesarmarArmadilhas}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Escalar muros</Form.Label>
-                <Form.Control disabled value={this.state.escalarMuros} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Escalar muros"
+                value={this.state.escalarMuros}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Mover-se em silêncio</Form.Label>
-                <Form.Control disabled value={this.state.moverSeEmSilencio} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Mover-se em silêncio"
+                value={this.state.moverSeEmSilencio}
+              />
             </Col>
           </Row>
           <Row>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Esconder-se nas sombras</Form.Label>
-                <Form.Control
-                  disabled
-                  value={this.state.esconderSeNasSombras}
-                />
-              </Form.Group>
+              <DisabledTextBox
+                label="Esconder-se nas sombras"
+                value={this.state.esconderSeNasSombras}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Pungar</Form.Label>
-                <Form.Control disabled value={this.state.pungar} />
-              </Form.Group>
+              <DisabledTextBox label="Pungar" value={this.state.pungar} />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Ouvir barulhos</Form.Label>
-                <Form.Control disabled value={this.state.ouvirBarulhos} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ouvir barulhos"
+                value={this.state.ouvirBarulhos}
+              />
             </Col>
             <Col sm={3}>
-              <Form.Group>
-                <Form.Label>Ataque pelas costas</Form.Label>
-                <Form.Control disabled value={this.state.ataquePelasCostas} />
-              </Form.Group>
+              <DisabledTextBox
+                label="Ataque pelas costas"
+                value={this.state.ataquePelasCostas}
+              />
             </Col>
           </Row>
 
-          <h5>Idiomas</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Nome Idioma</th>
-                <th>Falar</th>
-                <th>Ler</th>
-                <th>Escrever</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.listaIdiomas.map(item => (
-                <tr>
-                  <td>1</td>
-                  <td>Table cell</td>
-                  <td>0</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          <h5>Dinheiro</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>Platina</th>
-                <th>Eléctrum</th>
-                <th>Ouro</th>
-                <th>Prata</th>
-                <th>Cobre</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>100</td>
-                <td>50</td>
-                <td>25</td>
-              </tr>
-            </tbody>
-          </Table>
-
-          <h5>Controle de Magias</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>Descrição</th>
-                <th>1º</th>
-                <th>2º</th>
-                <th>3º</th>
-                <th>4º</th>
-                <th>5º</th>
-                <th>6º</th>
-                <th>7º</th>
-                <th>8º</th>
-                <th>9º</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Acesso a magia (possuídas)</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-                <td>8</td>
-                <td>9</td>
-              </tr>
-              <tr>
-                <td>Magias por dia (memorizadas)</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-                <td>8</td>
-                <td>9</td>
-              </tr>
-            </tbody>
-          </Table>
-
-          <h5>Lista de Magias</h5>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Círculo</th>
-                <th>Nome da Magia</th>
-                <th>Alcance</th>
-                <th>Duração</th>
-                <th>Descrição</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.listaMagias.map(item => (
-                <tr>
-                  <td>1</td>
-                  <td>Table cell</td>
-                  <td>0</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <TableArmas listaArmas={this.state.listaArmas} />
+          <br />
+          <TableEquipamentos listaEquipamentos={this.state.listaEquipamentos} />
+          <br />
+          <TableAcessoMagia listaAcessoMagia={this.state.listaAcessoMagia} />
+          <br />
+          <TableIdiomas listaIdiomas={this.state.listaIdiomas} />
+          <br />
+          <TableDinheiro listaDinheiro={this.state.listaDinheiro} />
+          <br />
+          <TableControleMagias
+            listaControleMagias={this.state.listaControleMagias}
+          />
+          <br />
+          <TableListaMagias listaMagias={this.state.listaMagias} />
+          <br />
 
           <Button variant="primary" type="submit">
             Submit
