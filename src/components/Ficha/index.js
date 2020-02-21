@@ -34,7 +34,13 @@ export default class Ficha extends Component {
       alinhamento: "",
       caracteristicasFisicas: "",
 
-      forca: 0,
+      forca: "0",
+      destreza: "0",
+      constituicao: "0",
+      inteligencia: "0",
+      sabedoria: "0",
+      carisma: "0",
+
       calculosAtributoForca: {
         forcaAjuste: -5,
         cargaLeve: "0",
@@ -42,24 +48,19 @@ export default class Ficha extends Component {
         cargaMaxima: "0"
       },
 
-      destreza: "0",
       destrezaAjuste: "0",
       talentosLadinos: "0",
 
-      constituicao: "0",
       constituicaoAjuste: "0",
       percentualRessurreicao: "0",
 
-      inteligencia: "0",
       idiomas: "0",
       percentualAprenderMagia: "0",
       inteligenciaMagiasAdicionais: "0",
 
-      sabedoria: "0",
       sabedoriaAjuste: "0",
       sabedoriaMagiasAdicionais: "0",
 
-      carisma: "0",
       numeroSeguidores: "0",
       carismaAjuste: "0",
       mortosVivos: "0",
