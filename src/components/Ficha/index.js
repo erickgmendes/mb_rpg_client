@@ -19,7 +19,8 @@ import { fetchClasses } from "../../service/classe-api";
 import { fetchAlinhamentos } from "../../service/alinhamento-api";
 import { fetchNiveis } from "../../service/nivel-api";
 import { fetchRolagemDados } from "../../service/rolagem-dados-api";
-import { fetchCalculoAtributoForca } from "../../service/calculos-atributo-forca-ajuste";
+import { fetchForca } from "../../service/forca-api";
+import { fetchInteligencia } from "../../service/inteligencia-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -28,12 +29,11 @@ export default class Ficha extends Component {
     this.state = {
       nomeJogador: "",
       nomePersonagem: "",
-      raca: "",
-      classe: "",
       nivel: "1",
       alinhamento: "",
+      raca: "",
+      classe: "",
       caracteristicasFisicas: "",
-
       forca: "0",
       destreza: "0",
       constituicao: "0",
@@ -41,29 +41,29 @@ export default class Ficha extends Component {
       sabedoria: "0",
       carisma: "0",
 
-      calculosAtributoForca: {
-        forcaAjuste: -5,
-        cargaLeve: "0",
-        cargaPesada: "0",
-        cargaMaxima: "0"
+      calculoForca: {},
+      calculoInteligencia: {},
+
+      calculoDestreza: {
+        destrezaAjuste: "0",
+        talentosLadinos: "0"
       },
 
-      destrezaAjuste: "0",
-      talentosLadinos: "0",
+      calculoConstituicao: {
+        ajuste: "0",
+        percentualRessurreicao: "0"
+      },
 
-      constituicaoAjuste: "0",
-      percentualRessurreicao: "0",
+      calculoSabedoria: {
+        ajuste: "0",
+        magiasAdicionais: "0"
+      },
 
-      idiomas: "0",
-      percentualAprenderMagia: "0",
-      inteligenciaMagiasAdicionais: "0",
-
-      sabedoriaAjuste: "0",
-      sabedoriaMagiasAdicionais: "0",
-
-      numeroSeguidores: "0",
-      carismaAjuste: "0",
-      mortosVivos: "0",
+      calculoCarisma: {
+        ajuste: "0",
+        numeroSeguidores: "0",
+        mortosVivos: "0"
+      },
 
       ca: "0",
       ba: "0",
@@ -103,8 +103,12 @@ export default class Ficha extends Component {
     this.setState({ niveis: fetchNiveis() });
     this.setState({ rolagemDados: fetchRolagemDados() });
 
-    fetchCalculoAtributoForca(this.state.forca).then(res =>
-      this.setState({ calculosAtributoForca: res.data })
+    fetchForca(this.state.forca).then(res =>
+      this.setState({ calculoForca: res.data })
+    );
+
+    fetchInteligencia(this.state.inteligencia).then(res =>
+      this.setState({ calculoInteligencia: res.data })
     );
   }
 
@@ -116,11 +120,17 @@ export default class Ficha extends Component {
   onChangeForca = event => {
     const valor = event.target.value;
 
-    fetchCalculoAtributoForca(valor).then(res =>
-      this.setState({ calculosAtributoForca: res.data })
-    );
+    fetchForca(valor).then(res => this.setState({ calculoForca: res.data }));
 
     this.setState({ forca: valor });
+  };
+
+  onChangeInteligencia = event => {
+    const valor = event.target.value;
+
+    fetchInteligencia(valor).then(res => this.setState({ calculoInteligencia: res.data }));
+
+    this.setState({ inteligencia: valor });
   };
 
   /*onChangeDestreza = (event) => {
@@ -265,7 +275,7 @@ export default class Ficha extends Component {
             <Col sm={3}>
               <DisabledTextBox
                 label="Ajuste de ataque e dano"
-                value={this.state.calculosAtributoForca.ajuste}
+                value={this.state.calculoForca.ajuste}
               />
             </Col>
             <Col sm={3}>
@@ -323,18 +333,21 @@ export default class Ficha extends Component {
           <h5>Inteligência</h5>
           <Row>
             <Col sm={4}>
-              <DisabledTextBox label="Idiomas" value={this.state.idiomas} />
+              <DisabledTextBox
+                label="Idiomas"
+                value={this.state.calculoInteligencia.idiomasAdicionais}
+              />
             </Col>
             <Col sm={4}>
               <DisabledTextBox
                 label="% Aprender Magia"
-                value={this.state.percentualAprenderMagia}
+                value={this.state.calculoInteligencia.chanceDeAprenderMagia}
               />
             </Col>
             <Col sm={4}>
               <DisabledTextBox
                 label="Magias Adicionais"
-                value={this.state.inteligenciaMagiasAdicionais}
+                value={this.state.calculoInteligencia.magiasArcanasAdicionais}
               />
             </Col>
           </Row>
