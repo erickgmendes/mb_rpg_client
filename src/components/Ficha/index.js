@@ -22,6 +22,7 @@ import { fetchRolagemDados } from "../../service/rolagem-dados-api";
 import { fetchForca } from "../../service/forca-api";
 import { fetchInteligencia } from "../../service/inteligencia-api";
 import { fetchDestreza } from "../../service/destreza-api";
+import { fetchConstituicao } from "../../service/constituicao-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -44,11 +45,7 @@ export default class Ficha extends Component {
 
       calculoForca: {},
       calculoInteligencia: {},
-
-      calculoDestreza: {
-        destrezaAjuste: "0",
-        talentosLadinos: "0"
-      },
+      calculoDestreza: {},
 
       calculoConstituicao: {
         ajuste: "0",
@@ -115,6 +112,10 @@ export default class Ficha extends Component {
     fetchDestreza(this.state.destreza).then(res =>
       this.setState({ calculoDestreza: res.data })
     );
+
+    fetchConstituicao(this.state.constituicao).then(res =>
+      this.setState({ calculoConstituicao: res.data })
+    );
   }
 
   onFormSubmit = event => {
@@ -144,21 +145,13 @@ export default class Ficha extends Component {
     this.setState({ inteligencia: valor });
   };
 
-  /*onChangeDestreza = (event) => {
-        const valor = event.target.value
-        this.setState({ forca: valor })
-
-        let ajuste = calcularAjusteDestreza(valor);
-        this.setState({ forcaAjuste: ajuste })
-    }
-
-    onChangeConstituicao = (event) => {
-        const valor = event.target.value
-        this.setState({ forca: valor })
-
-        let ajuste = calcularAjusteForca(valor);
-        this.setState({ forcaAjuste: ajuste })
-    }*/
+  onChangeConstituicao = event => {
+    const valor = event.target.value;
+    fetchConstituicao(valor).then(res =>
+      this.setState({ calculoConstituicao: res.data })
+    );
+    this.setState({ constituicao: valor });
+  };
 
   render() {
     return (
@@ -331,7 +324,7 @@ export default class Ficha extends Component {
             </Col>
           </Row>
           <Row>
-          <Col sm={4}>
+            <Col sm={4}>
               <DisabledTextBox
                 label="Abrir fechaduras"
                 value={this.state.calculoDestreza.abrirFechaduras}
@@ -355,14 +348,14 @@ export default class Ficha extends Component {
           <Row>
             <Col sm={6}>
               <DisabledTextBox
-                label="Ajuste PV e Proteção"
-                value={this.state.constituicaoAjuste}
+                label="Pontos de Vida e Proteção"
+                value={this.state.calculoConstituicao.pontosDeVidaEProtecao}
               />
             </Col>
             <Col sm={6}>
               <DisabledTextBox
                 label="% Ressurreição"
-                value={this.state.percentualRessurreicao}
+                value={this.state.calculoConstituicao.percentualRessurreicao}
               />
             </Col>
           </Row>
