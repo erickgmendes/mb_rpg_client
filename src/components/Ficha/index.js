@@ -21,6 +21,7 @@ import { fetchNiveis } from "../../service/nivel-api";
 import { fetchRolagemDados } from "../../service/rolagem-dados-api";
 import { fetchForca } from "../../service/forca-api";
 import { fetchInteligencia } from "../../service/inteligencia-api";
+import { fetchDestreza } from "../../service/destreza-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -110,6 +111,10 @@ export default class Ficha extends Component {
     fetchInteligencia(this.state.inteligencia).then(res =>
       this.setState({ calculoInteligencia: res.data })
     );
+
+    fetchDestreza(this.state.destreza).then(res =>
+      this.setState({ calculoDestreza: res.data })
+    );
   }
 
   onFormSubmit = event => {
@@ -119,17 +124,23 @@ export default class Ficha extends Component {
 
   onChangeForca = event => {
     const valor = event.target.value;
-
     fetchForca(valor).then(res => this.setState({ calculoForca: res.data }));
-
     this.setState({ forca: valor });
+  };
+
+  onChangeDestreza = event => {
+    const valor = event.target.value;
+    fetchDestreza(valor).then(res =>
+      this.setState({ calculoDestreza: res.data })
+    );
+    this.setState({ destreza: valor });
   };
 
   onChangeInteligencia = event => {
     const valor = event.target.value;
-
-    fetchInteligencia(valor).then(res => this.setState({ calculoInteligencia: res.data }));
-
+    fetchInteligencia(valor).then(res =>
+      this.setState({ calculoInteligencia: res.data })
+    );
     this.setState({ inteligencia: valor });
   };
 
@@ -300,16 +311,42 @@ export default class Ficha extends Component {
 
           <h5>Destreza</h5>
           <Row>
-            <Col sm={6}>
+            <Col sm={4}>
               <DisabledTextBox
                 label="Ajustes"
-                value={this.state.destrezaAjuste}
+                value={this.state.calculoDestreza.ajuste}
               />
             </Col>
-            <Col sm={6}>
+            <Col sm={4}>
               <DisabledTextBox
-                label="Talentos Ladinos"
-                value={this.state.talentosLadinos}
+                label="Localizar/desarmar armadilhas"
+                value={this.state.calculoDestreza.localizarDesarmarArmadilhas}
+              />
+            </Col>
+            <Col sm={4}>
+              <DisabledTextBox
+                label="Mover-se em silêncio"
+                value={this.state.calculoDestreza.moverSeEmSilecio}
+              />
+            </Col>
+          </Row>
+          <Row>
+          <Col sm={4}>
+              <DisabledTextBox
+                label="Abrir fechaduras"
+                value={this.state.calculoDestreza.abrirFechaduras}
+              />
+            </Col>
+            <Col sm={4}>
+              <DisabledTextBox
+                label="Esconder-se nas sombras"
+                value={this.state.calculoDestreza.esconderSeNasSombras}
+              />
+            </Col>
+            <Col sm={4}>
+              <DisabledTextBox
+                label="Pungar"
+                value={this.state.calculoDestreza.pungar}
               />
             </Col>
           </Row>
@@ -439,57 +476,6 @@ export default class Ficha extends Component {
             </Col>
             <Col sm={3}>
               <DisabledTextBox label="Vampiro" value={this.state.vampiro} />
-            </Col>
-          </Row>
-
-          <h5>Talentos Ladinos</h5>
-          <Row>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Abrir fechaduras"
-                value={this.state.abrirFechaduras}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Reconhecer e desarmar armadilhas"
-                value={this.state.reconhecerDesarmarArmadilhas}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Escalar muros"
-                value={this.state.escalarMuros}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Mover-se em silêncio"
-                value={this.state.moverSeEmSilencio}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Esconder-se nas sombras"
-                value={this.state.esconderSeNasSombras}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox label="Pungar" value={this.state.pungar} />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Ouvir barulhos"
-                value={this.state.ouvirBarulhos}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Ataque pelas costas"
-                value={this.state.ataquePelasCostas}
-              />
             </Col>
           </Row>
 
