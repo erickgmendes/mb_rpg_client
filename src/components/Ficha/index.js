@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
-//import { calcularAjusteForca } from "../../util/funcoes-forca";
 
+// Componentes
 import TextBox from "../TextBox";
 import DisabledTextBox from "../DisabledTextBox";
 import ComboBox from "../ComboBox";
@@ -14,6 +14,7 @@ import TableDinheiro from "../TableDinheiro";
 import TableControleMagias from "../TableControleMagias";
 import TableListaMagias from "../TableListaMagias";
 
+// API
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
 import { fetchAlinhamentos } from "../../service/alinhamento-api";
@@ -23,6 +24,8 @@ import { fetchForca } from "../../service/forca-api";
 import { fetchInteligencia } from "../../service/inteligencia-api";
 import { fetchDestreza } from "../../service/destreza-api";
 import { fetchConstituicao } from "../../service/constituicao-api";
+import { fetchSabedoria } from "../../service/sabedoria-api";
+import { fetchCarisma } from "../../service/carisma-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -32,36 +35,23 @@ export default class Ficha extends Component {
       nomeJogador: "",
       nomePersonagem: "",
       nivel: "1",
-      alinhamento: "",
-      raca: "",
-      classe: "",
+      alinhamento: "Caótico",
+      raca: "Anão",
+      classe: "Clérigo",
       caracteristicasFisicas: "",
-      forca: "0",
-      destreza: "0",
-      constituicao: "0",
-      inteligencia: "0",
-      sabedoria: "0",
-      carisma: "0",
+      forca: "3",
+      destreza: "3",
+      constituicao: "3",
+      inteligencia: "3",
+      sabedoria: "3",
+      carisma: "3",
 
       calculoForca: {},
       calculoInteligencia: {},
       calculoDestreza: {},
-
-      calculoConstituicao: {
-        ajuste: "0",
-        percentualRessurreicao: "0"
-      },
-
-      calculoSabedoria: {
-        ajuste: "0",
-        magiasAdicionais: "0"
-      },
-
-      calculoCarisma: {
-        ajuste: "0",
-        numeroSeguidores: "0",
-        mortosVivos: "0"
-      },
+      calculoConstituicao: {},
+      calculoSabedoria: {},
+      calculoCarisma: {},
 
       ca: "0",
       ba: "0",
@@ -116,6 +106,14 @@ export default class Ficha extends Component {
     fetchConstituicao(this.state.constituicao).then(res =>
       this.setState({ calculoConstituicao: res.data })
     );
+
+    fetchSabedoria(this.state.sabedoria).then(res =>
+      this.setState({ calculoSabedoria: res.data })
+    );
+
+    fetchCarisma(this.state.carisma).then(res =>
+      this.setState({ calculoCarisma: res.data })
+    );
   }
 
   onFormSubmit = event => {
@@ -151,6 +149,22 @@ export default class Ficha extends Component {
       this.setState({ calculoConstituicao: res.data })
     );
     this.setState({ constituicao: valor });
+  };
+
+  onChangeSabedoria = event => {
+    const valor = event.target.value;
+    fetchSabedoria(valor).then(res =>
+      this.setState({ calculoSabedoria: res.data })
+    );
+    this.setState({ sabedoria: valor });
+  };
+
+  onChangeCarisma = event => {
+    const valor = event.target.value;
+    fetchCarisma(valor).then(res =>
+      this.setState({ calculoCarisma: res.data })
+    );
+    this.setState({ carisma: valor });
   };
 
   render() {
@@ -387,13 +401,13 @@ export default class Ficha extends Component {
             <Col sm={6}>
               <DisabledTextBox
                 label="Ajuste de Proteção"
-                value={this.state.constituicaoAjuste}
+                value={this.state.calculoSabedoria.ajusteProtecao}
               />
             </Col>
             <Col sm={6}>
               <DisabledTextBox
                 label="Magias Adicionais"
-                value={this.state.percentualRessurreicao}
+                value={this.state.calculoSabedoria.magiasAdicionais}
               />
             </Col>
           </Row>
@@ -403,19 +417,19 @@ export default class Ficha extends Component {
             <Col sm={4}>
               <DisabledTextBox
                 label="Nº Seguidores"
-                value={this.state.numeroSeguidores}
+                value={this.state.calculoCarisma.numeroSeguidores}
               />
             </Col>
             <Col sm={4}>
               <DisabledTextBox
                 label="Ajuste Reação"
-                value={this.state.carismaAjuste}
+                value={this.state.calculoCarisma.ajuste}
               />
             </Col>
             <Col sm={4}>
               <DisabledTextBox
                 label="Mortos-Vivos"
-                value={this.state.mortosVivos}
+                value={this.state.calculoCarisma.mortosVivos}
               />
             </Col>
           </Row>
