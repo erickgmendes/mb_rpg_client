@@ -26,6 +26,7 @@ import { fetchDestreza } from "../../service/destreza-api";
 import { fetchConstituicao } from "../../service/constituicao-api";
 import { fetchSabedoria } from "../../service/sabedoria-api";
 import { fetchCarisma } from "../../service/carisma-api";
+import { fetchCalculosClerigo } from "../../service/clerigo-api";
 
 export default class Ficha extends Component {
   constructor(props) {
@@ -52,6 +53,8 @@ export default class Ficha extends Component {
       calculoConstituicao: {},
       calculoSabedoria: {},
       calculoCarisma: {},
+
+      calculoClerigo: {},
 
       ca: "0",
       ba: "0",
@@ -88,6 +91,7 @@ export default class Ficha extends Component {
     fetchRacas().then(res => this.setState({ racas: res.data }));
     fetchClasses().then(res => this.setState({ classes: res.data }));
     fetchAlinhamentos().then(res => this.setState({ alinhamentos: res.data }));
+
     this.setState({ niveis: fetchNiveis() });
     this.setState({ rolagemDados: fetchRolagemDados() });
 
@@ -113,7 +117,11 @@ export default class Ficha extends Component {
 
     fetchCarisma(this.state.carisma).then(res =>
       this.setState({ calculoCarisma: res.data })
-    );
+    );    
+
+    fetchCalculosClerigo(this.state.nivel).then(res =>
+      this.setState({ calculoClerigo: res.data })
+    );    
   }
 
   onFormSubmit = event => {
@@ -299,19 +307,19 @@ export default class Ficha extends Component {
             <Col sm={3}>
               <DisabledTextBox
                 label="Carga leve"
-                value={this.state.cargaLeve}
+                value={this.state.calculoForca.cargaLeve}
               />
             </Col>
             <Col sm={3}>
               <DisabledTextBox
                 label="Carga pesada"
-                value={this.state.cargaPesada}
+                value={this.state.calculoForca.cargaPesada}
               />
             </Col>
             <Col sm={3}>
               <DisabledTextBox
                 label="Carga máxima"
-                value={this.state.cargaMaxima}
+                value={this.state.calculoForca.cargaMaxima}
               />
             </Col>
           </Row>
@@ -459,30 +467,30 @@ export default class Ficha extends Component {
           <h5>Expulsar Mortos</h5>
           <Row>
             <Col sm={3}>
-              <DisabledTextBox label="Esqueleto" value={this.state.esqueleto} />
+              <DisabledTextBox label="Esqueleto" value={this.state.calculoClerigo.esqueleto} />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Zumbi" value={this.state.zumbi} />
+              <DisabledTextBox label="Zumbi" value={this.state.calculoClerigo.zumbi} />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Carniçal" value={this.state.carnical} />
+              <DisabledTextBox label="Carniçal" value={this.state.calculoClerigo.carnical} />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Inumano" value={this.state.inumano} />
+              <DisabledTextBox label="Inumano" value={this.state.calculoClerigo.inumano} />
             </Col>
           </Row>
           <Row>
             <Col sm={3}>
-              <DisabledTextBox label="Aparição" value={this.state.aparicao} />
+              <DisabledTextBox label="Aparição" value={this.state.calculoClerigo.aparicao} />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Múmia" value={this.state.mumia} />
+              <DisabledTextBox label="Múmia" value={this.state.calculoClerigo.mumia} />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Espectro" value={this.state.espectro} />
+              <DisabledTextBox label="Espectro" value={this.state.calculoClerigo.espectro} />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Vampiro" value={this.state.vampiro} />
+              <DisabledTextBox label="Vampiro" value={this.state.calculoClerigo.vampiro} />
             </Col>
           </Row>
 
@@ -502,6 +510,7 @@ export default class Ficha extends Component {
           <br />
           <TableListaMagias listaMagias={this.state.listaMagias} />
           <br />
+          
 
           <Button variant="primary" type="submit">
             Submit
