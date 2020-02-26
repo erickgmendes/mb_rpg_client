@@ -10,7 +10,6 @@ import TableArmas from "../TableArmas";
 import TableEquipamentos from "../TableEquipamentos";
 import TableAcessoMagia from "../TableAcessoMagia";
 import TableIdiomas from "../TableIdiomas";
-import TableDinheiro from "../TableDinheiro";
 import TableControleMagias from "../TableControleMagias";
 import TableListaMagias from "../TableListaMagias";
 
@@ -47,6 +46,8 @@ export default class Ficha extends Component {
       sabedoria: "3",
       carisma: "3",
 
+      calculoRaca: {},
+
       calculoForca: {},
       calculoInteligencia: {},
       calculoDestreza: {},
@@ -56,12 +57,14 @@ export default class Ficha extends Component {
 
       calculoClerigo: {},
 
-      ca: "0",
       ba: "0",
       jp: "0",
       pv: "0",
       movimento: "0",
       xp: "0",
+
+      dinheiroInicial: 0,
+      dinheiro: {},
 
       listaArmas: [],
       listaEquipamentos: [],
@@ -117,11 +120,13 @@ export default class Ficha extends Component {
 
     fetchCarisma(this.state.carisma).then(res =>
       this.setState({ calculoCarisma: res.data })
-    );    
+    );
 
     fetchCalculosClerigo(this.state.nivel).then(res =>
       this.setState({ calculoClerigo: res.data })
-    );    
+    );
+
+    this.calcularClasseArmadura();
   }
 
   onFormSubmit = event => {
@@ -140,7 +145,9 @@ export default class Ficha extends Component {
     fetchDestreza(valor).then(res =>
       this.setState({ calculoDestreza: res.data })
     );
-    this.setState({ destreza: valor });
+    this.setState({ destreza: valor });  
+    
+    this.calcularClasseArmadura();
   };
 
   onChangeInteligencia = event => {
@@ -173,6 +180,64 @@ export default class Ficha extends Component {
       this.setState({ calculoCarisma: res.data })
     );
     this.setState({ carisma: valor });
+  };
+
+  calcularClasseArmadura = () => {
+    let destreza = parseInt(
+      this.state.calculoDestreza.ajusteAtaqueSurpresaDefesaProtecao ?? 0
+    );
+    let armadura = 0;
+    let raca = parseInt(
+      this.state.calculoRaca.ajusteAtaqueSurpresaDefesaProtecao ?? 0
+    );
+    let outros = 0;
+
+    let ca = 10 + destreza + armadura + raca + outros;
+
+    this.setState({ca, ca})
+  };
+
+  calcularJogadaDeProtecao = () => {
+    let base = 0;
+    let destreza = parseInt(
+      this.state.calculoDestreza.ajusteAtaqueSurpresaDefesaProtecao ?? 0
+    );
+    let constituicao = parseInt(
+      this.state.calculoRaca.ajusteAtaqueSurpresaDefesaProtecao ?? 0
+    );
+    let sabedoria = 0;
+    let jp = base + destreza + constituicao + sabedoria;
+
+    this.setState({ jp: jp });
+  };
+
+  calcularMovimento = () => {
+    let raca = 0;
+    let carga = 0;
+    let armadura = 0;
+    let movimento =  raca + carga + armadura;
+    this.setState({movimento: movimento})
+  };
+
+  calcularPV = () => {
+    let dadoVida = 0;
+    let constituicao = 0;
+    let pv = dadoVida + constituicao;    
+    this.setState({pv: pv})
+  };
+
+  calcularBonusAtaque = () => {
+    let forca = parseInt(this.calculoForca.ajuste ?? 0);
+    let destreza = parseInt(
+      this.calculoDestreza.ajusteAtaqueSurpresaDefesaProtecao ?? 0
+    );
+    let classe = 0; //this.calculoClasse;
+    let raca = parseInt(
+      this.state.calculoRaca.ajusteAtaqueSurpresaDefesaProtecao ?? 0
+    );
+
+    let ba =  forca + destreza + classe + raca;
+    this.setState({ba: ba})
   };
 
   render() {
@@ -245,207 +310,10 @@ export default class Ficha extends Component {
 
           <Row>
             <Col sm={2}>
-              <ComboBox
-                label="Força"
-                value={this.state.forca}
-                onChange={this.onChangeForca}
-                lista={this.state.rolagemDados}
-              />
-            </Col>
-            <Col sm={2}>
-              <ComboBox
-                label="Destreza"
-                value={this.state.destreza}
-                onChange={this.onChangeDestreza}
-                lista={this.state.rolagemDados}
-              />
-            </Col>
-            <Col sm={2}>
-              <ComboBox
-                label="Constituição"
-                value={this.state.constituicao}
-                onChange={this.onChangeConstituicao}
-                lista={this.state.rolagemDados}
-              />
-            </Col>
-            <Col sm={2}>
-              <ComboBox
-                label="Inteligência"
-                value={this.state.inteligencia}
-                onChange={this.onChangeInteligencia}
-                lista={this.state.rolagemDados}
-              />
-            </Col>
-            <Col sm={2}>
-              <ComboBox
-                label="Sabedoria"
-                value={this.state.sabedoria}
-                onChange={this.onChangeSabedoria}
-                lista={this.state.rolagemDados}
-              />
-            </Col>
-            <Col sm={2}>
-              <ComboBox
-                label="Carisma"
-                value={this.state.carisma}
-                onChange={this.onChangeCarisma}
-                lista={this.state.rolagemDados}
-              />
-            </Col>
-          </Row>
-
-          <h3>Cálculos</h3>
-          <hr />
-          <h5>Força</h5>
-          <Row>
-            <Col sm={3}>
               <DisabledTextBox
-                label="Ajuste de ataque e dano"
-                value={this.state.calculoForca.ajuste}
+                label="Classe Armadura"
+                value={this.state.ca}
               />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Carga leve"
-                value={this.state.calculoForca.cargaLeve}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Carga pesada"
-                value={this.state.calculoForca.cargaPesada}
-              />
-            </Col>
-            <Col sm={3}>
-              <DisabledTextBox
-                label="Carga máxima"
-                value={this.state.calculoForca.cargaMaxima}
-              />
-            </Col>
-          </Row>
-
-          <h5>Destreza</h5>
-          <Row>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Ajustes"
-                value={this.state.calculoDestreza.ajuste}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Localizar/desarmar armadilhas"
-                value={this.state.calculoDestreza.localizarDesarmarArmadilhas}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Mover-se em silêncio"
-                value={this.state.calculoDestreza.moverSeEmSilecio}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Abrir fechaduras"
-                value={this.state.calculoDestreza.abrirFechaduras}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Esconder-se nas sombras"
-                value={this.state.calculoDestreza.esconderSeNasSombras}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Pungar"
-                value={this.state.calculoDestreza.pungar}
-              />
-            </Col>
-          </Row>
-
-          <h5>Constituição</h5>
-          <Row>
-            <Col sm={6}>
-              <DisabledTextBox
-                label="Pontos de Vida e Proteção"
-                value={this.state.calculoConstituicao.pontosDeVidaEProtecao}
-              />
-            </Col>
-            <Col sm={6}>
-              <DisabledTextBox
-                label="% Ressurreição"
-                value={this.state.calculoConstituicao.percentualRessurreicao}
-              />
-            </Col>
-          </Row>
-
-          <h5>Inteligência</h5>
-          <Row>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Idiomas"
-                value={this.state.calculoInteligencia.idiomasAdicionais}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="% Aprender Magia"
-                value={this.state.calculoInteligencia.chanceDeAprenderMagia}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Magias Adicionais"
-                value={this.state.calculoInteligencia.magiasArcanasAdicionais}
-              />
-            </Col>
-          </Row>
-
-          <h5>Sabedoria</h5>
-          <Row>
-            <Col sm={6}>
-              <DisabledTextBox
-                label="Ajuste de Proteção"
-                value={this.state.calculoSabedoria.ajusteProtecao}
-              />
-            </Col>
-            <Col sm={6}>
-              <DisabledTextBox
-                label="Magias Adicionais"
-                value={this.state.calculoSabedoria.magiasAdicionais}
-              />
-            </Col>
-          </Row>
-
-          <h5>Carisma</h5>
-          <Row>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Nº Seguidores"
-                value={this.state.calculoCarisma.numeroSeguidores}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Ajuste Reação"
-                value={this.state.calculoCarisma.ajuste}
-              />
-            </Col>
-            <Col sm={4}>
-              <DisabledTextBox
-                label="Mortos-Vivos"
-                value={this.state.calculoCarisma.mortosVivos}
-              />
-            </Col>
-          </Row>
-
-          <h5>Sub-Atributos</h5>
-          <Row>
-            <Col sm={2}>
-              <DisabledTextBox label="Classe Armadura" value={this.state.ca} />
             </Col>
             <Col sm={2}>
               <DisabledTextBox label="Bônus Armadura" value={this.state.ba} />
@@ -464,33 +332,262 @@ export default class Ficha extends Component {
             </Col>
           </Row>
 
+          <Row>
+            <Col sm={2}>
+              <ComboBox
+                label="Força"
+                value={this.state.forca}
+                onChange={this.onChangeForca}
+                lista={this.state.rolagemDados}
+              />
+            </Col>
+            <Col sm={4}>
+              <DisabledTextBox
+                label="Ajuste de ataque e dano"
+                value={this.state.calculoForca.ajuste}
+              />
+            </Col>
+            <Col sm={2}>
+              <DisabledTextBox
+                label="Carga leve"
+                value={this.state.calculoForca.cargaLeve}
+              />
+            </Col>
+            <Col sm={2}>
+              <DisabledTextBox
+                label="Carga pesada"
+                value={this.state.calculoForca.cargaPesada}
+              />
+            </Col>
+            <Col sm={2}>
+              <DisabledTextBox
+                label="Carga máxima"
+                value={this.state.calculoForca.cargaMaxima}
+              />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm={2}>
+              <ComboBox
+                label="Inteligência"
+                value={this.state.inteligencia}
+                onChange={this.onChangeInteligencia}
+                lista={this.state.rolagemDados}
+              />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox
+                label="Idiomas Adicionais"
+                value={this.state.calculoInteligencia.idiomasAdicionais}
+              />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox
+                label="Chance de Aprender Magia"
+                value={this.state.calculoInteligencia.chanceDeAprenderMagia}
+              />
+            </Col>
+            <Col sm={4}>
+              <DisabledTextBox
+                label="Magias Arcanas Adicionais"
+                value={this.state.calculoInteligencia.magiasArcanasAdicionais}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={2}>
+              <ComboBox
+                label="Sabedoria"
+                value={this.state.sabedoria}
+                onChange={this.onChangeSabedoria}
+                lista={this.state.rolagemDados}
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Ajuste de Proteção"
+                value={this.state.calculoSabedoria.ajusteProtecao}
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Magias Divinas Adicionais"
+                value={this.state.calculoSabedoria.magiasAdicionais}
+              />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm={2}>
+              <ComboBox
+                label="Destreza"
+                value={this.state.destreza}
+                onChange={this.onChangeDestreza}
+                lista={this.state.rolagemDados}
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Ajuste de ataque, surpresa, defesa e proteção"
+                value={
+                  this.state.calculoDestreza.ajusteAtaqueSurpresaDefesaProtecao
+                }
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Localizar e desarmar armadilhas"
+                value={this.state.calculoDestreza.localizarDesarmarArmadilhas}
+              />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm={2}></Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Mover-se em silêncio e Abrir fechaduras"
+                value={
+                  this.state.calculoDestreza.moverSeEmSilecioAbrirFechaduras
+                }
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Esconder-se nas sombras e Pungar"
+                value={this.state.calculoDestreza.esconderSeNasSombrasPungar}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={2}>
+              <ComboBox
+                label="Constituição"
+                value={this.state.constituicao}
+                onChange={this.onChangeConstituicao}
+                lista={this.state.rolagemDados}
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Pontos de vida e proteção"
+                value={this.state.calculoConstituicao.pontosDeVidaEProtecao}
+              />
+            </Col>
+            <Col sm={5}>
+              <DisabledTextBox
+                label="Chance de ressurreição"
+                value={this.state.calculoConstituicao.percentualRessurreicao}
+              />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm={2}>
+              <ComboBox
+                label="Carisma"
+                value={this.state.carisma}
+                onChange={this.onChangeCarisma}
+                lista={this.state.rolagemDados}
+              />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox
+                label="Número máximo de seguidores"
+                value={this.state.calculoCarisma.numeroSeguidores}
+              />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox
+                label="Ajuste de reação"
+                value={this.state.calculoCarisma.ajuste}
+              />
+            </Col>
+            <Col sm={4}>
+              <DisabledTextBox
+                label="Quantidade de mortos-vivos afastada"
+                value={this.state.calculoCarisma.mortosVivos}
+              />
+            </Col>
+          </Row>
+
+          <h5>Dinheiro</h5>
+          <Row>
+            <Col sm={3}>
+              <TextBox
+                label="Inicial (3d6 x 10)"
+                value={this.state.dinheiroInicial}
+              />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox label="Ouro" value={this.state.dinheiro.ouro} />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox
+                label="Prata"
+                value={this.state.dinheiro.prata}
+              />
+            </Col>
+            <Col sm={3}>
+              <DisabledTextBox
+                label="Cobre"
+                value={this.state.dinheiro.cobre}
+              />
+            </Col>
+          </Row>
+
           <h5>Expulsar Mortos</h5>
           <Row>
             <Col sm={3}>
-              <DisabledTextBox label="Esqueleto" value={this.state.calculoClerigo.esqueleto} />
+              <DisabledTextBox
+                label="Esqueleto"
+                value={this.state.calculoClerigo.esqueleto}
+              />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Zumbi" value={this.state.calculoClerigo.zumbi} />
+              <DisabledTextBox
+                label="Zumbi"
+                value={this.state.calculoClerigo.zumbi}
+              />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Carniçal" value={this.state.calculoClerigo.carnical} />
+              <DisabledTextBox
+                label="Carniçal"
+                value={this.state.calculoClerigo.carnical}
+              />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Inumano" value={this.state.calculoClerigo.inumano} />
+              <DisabledTextBox
+                label="Inumano"
+                value={this.state.calculoClerigo.inumano}
+              />
             </Col>
           </Row>
           <Row>
             <Col sm={3}>
-              <DisabledTextBox label="Aparição" value={this.state.calculoClerigo.aparicao} />
+              <DisabledTextBox
+                label="Aparição"
+                value={this.state.calculoClerigo.aparicao}
+              />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Múmia" value={this.state.calculoClerigo.mumia} />
+              <DisabledTextBox
+                label="Múmia"
+                value={this.state.calculoClerigo.mumia}
+              />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Espectro" value={this.state.calculoClerigo.espectro} />
+              <DisabledTextBox
+                label="Espectro"
+                value={this.state.calculoClerigo.espectro}
+              />
             </Col>
             <Col sm={3}>
-              <DisabledTextBox label="Vampiro" value={this.state.calculoClerigo.vampiro} />
+              <DisabledTextBox
+                label="Vampiro"
+                value={this.state.calculoClerigo.vampiro}
+              />
             </Col>
           </Row>
 
@@ -502,15 +599,12 @@ export default class Ficha extends Component {
           <br />
           <TableIdiomas listaIdiomas={this.state.listaIdiomas} />
           <br />
-          <TableDinheiro listaDinheiro={this.state.listaDinheiro} />
-          <br />
           <TableControleMagias
             listaControleMagias={this.state.listaControleMagias}
           />
           <br />
           <TableListaMagias listaMagias={this.state.listaMagias} />
           <br />
-          
 
           <Button variant="primary" type="submit">
             Submit
