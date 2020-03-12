@@ -14,7 +14,7 @@ class ComboBox extends React.Component {
             defaultValue={this.props.value}
             onChange={this.props.onChange}
           >
-            <option />
+            <option key="0" />
             {this.props.lista.map(item => (
               <option key={item.id}>{item.nome}</option>
             ))}

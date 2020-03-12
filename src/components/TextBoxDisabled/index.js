@@ -2,7 +2,7 @@ import React from "react";
 
 import { Form } from "react-bootstrap";
 
-class DisabledTextBox extends React.Component {
+class TextBoxDisabled extends React.Component {
   render() {
     //if (this.props.value === undefined) return <></>;
     return (
@@ -16,4 +16,4 @@ class DisabledTextBox extends React.Component {
   }
 }
 
-export default DisabledTextBox;
+export default TextBoxDisabled;

@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 
-import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
+import { Container, Form, Row, Col, Button } from "react-bootstrap";
 
 // Componentes
 import TextBox from "../TextBox";
 import ComboBox from "../ComboBox";
+import TextBoxDisabled from "../TextBoxDisabled";
+import TableAtributos from "../TableAtributos";
 
 // API
-import { fetchRacas, fetchRaca } from "../../service/raca-api";
+import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
 import { fetchNiveis } from "../../service/nivel-api";
 
@@ -19,20 +21,20 @@ export default class Ficha extends Component {
       //Dados Básicos
       nomeJogador: "",
       nomePersonagem: "",
-      nivel: "1",
+      nivel: 1,
       motivacao: "",
 
       raca: this.getObjetoVazio(),
       classe: this.getObjetoVazio(),
 
       // Atributos
-      forca: "0",
-      agilidade: "0",
-      inteligencia: "0",
-      vontade: "0",
+      forca: 0,
+      agilidade: 0,
+      inteligencia: 0,
+      vontade: 0,
 
-      pv: "60",
-      mana: "60",
+      pv: 60,
+      mana: 60,
 
       habilidades: [],
       equipamentos: [],
@@ -87,8 +89,6 @@ export default class Ficha extends Component {
     let classe = this.state.listaClasses.find(
       classe => classe.nome === nomeClasse
     );
-
-    console.log(classe);
 
     this.setState({ classe: classe });
   };
@@ -149,61 +149,22 @@ export default class Ficha extends Component {
             </Col>
           </Row>
           <Row>
-            <Col sm={12}>
+            <Col sm={8}>
               <TextBox
                 label="Motivação"
                 value={this.state.motivacao}
                 onChange={e => this.setState({ motivacao: e.target.value })}
               />
             </Col>
+            <Col sm={2}>
+              <TextBoxDisabled label="PV" value={this.state.pv} />
+            </Col>
+            <Col sm={2}>
+              <TextBoxDisabled label="Mana" value={this.state.mana} />
+            </Col>
           </Row>
 
-          <h5>Atributos</h5>
-
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>valor raça</th>
-                <th>valor classe</th>
-                <th>valor total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Força</td>
-                <td>{this.state.raca.valorForca}</td>
-                <td>{this.state.classe.valorForca}</td>
-                <td>
-                  {this.state.raca.valorForca + this.state.classe.valorForca}
-                </td>
-              </tr>
-              <tr>
-                <td>Agilidade</td>
-                <td>{this.state.raca.valorAgilidade}</td>
-                <td>{this.state.classe.valorAgilidade}</td>
-                <td>
-                  {this.state.raca.valorAgilidade + this.state.classe.valorAgilidade}
-                </td>
-              </tr>
-              <tr>
-                <td>Inteligência</td>
-                <td>{this.state.raca.valorInteligencia}</td>
-                <td>{this.state.classe.valorInteligencia}</td>
-                <td>
-                  {this.state.raca.valorInteligencia + this.state.classe.valorInteligencia}
-                </td>
-              </tr>
-              <tr>
-                <td>Vontade</td>
-                <td>{this.state.raca.valorVontade}</td>
-                <td>{this.state.classe.valorVontade}</td>
-                <td>
-                  {this.state.raca.valorVontade + this.state.classe.valorVontade}
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          <TableAtributos raca={this.state.raca} classe={this.state.classe} />
 
           <br />
           <Button variant="primary" type="submit">
