@@ -19,13 +19,11 @@ export default class Ficha extends Component {
       //Dados Básicos
       nomeJogador: "",
       nomePersonagem: "",
-      nomeRaca: "",
-      nomeClasse: "",
       nivel: "1",
       motivacao: "",
 
-      raca: {},
-      classe: {},
+      raca: this.getObjetoVazio(),
+      classe: this.getObjetoVazio(),
 
       // Atributos
       forca: "0",
@@ -51,20 +49,48 @@ export default class Ficha extends Component {
     this.setState({ niveis: fetchNiveis() });
   }
 
-  onChangeRaca = event => {
-    const nomeRaca = event.target.value;
-    this.setState({ raca: nomeRaca });
-    this.modificarAtributosRaca(nomeRaca);
+  getObjetoVazio = () => {
+    return {
+      id: 0,
+      nome: "",
+      valorForca: 0,
+      valorAgilidade: 0,
+      valorInteligencia: 0,
+      valorVontade: 0
+    };
   };
 
-  modificarAtributosRaca = nomeRaca => {
-    if (!nomeRaca) return;
+  onChangeRaca = event => {
+    const nomeRaca = event.target.value;
+
+    if (!nomeRaca) {
+      this.setState({
+        raca: this.getObjetoVazio()
+      });
+      return;
+    }
 
     let raca = this.state.listaRacas.find(raca => raca.nome === nomeRaca);
-    const idRaca = raca.id;
-    fetchRaca(idRaca).then(res => (raca = res.data));
-
     this.setState({ raca: raca });
+  };
+
+  onChangeClasse = event => {
+    const nomeClasse = event.target.value;
+
+    if (!nomeClasse) {
+      this.setState({
+        raca: this.getObjetoVazio()
+      });
+      return;
+    }
+
+    let classe = this.state.listaClasses.find(
+      classe => classe.nome === nomeClasse
+    );
+
+    console.log(classe);
+
+    this.setState({ classe: classe });
   };
 
   onFormSubmit = event => {
@@ -109,7 +135,7 @@ export default class Ficha extends Component {
               <ComboBox
                 label="Classe"
                 value={this.state.classe}
-                onChange={e => this.setState({ classe: e.target.value })}
+                onChange={this.onChangeClasse}
                 lista={this.state.listaClasses}
               />
             </Col>
@@ -138,30 +164,43 @@ export default class Ficha extends Component {
             <thead>
               <tr>
                 <th>#</th>
-                <th>valor</th>
-                <th>valor 2</th>
+                <th>valor raça</th>
+                <th>valor classe</th>
+                <th>valor total</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Força</td>
                 <td>{this.state.raca.valorForca}</td>
-                <td>{this.state.forca}</td>
+                <td>{this.state.classe.valorForca}</td>
+                <td>
+                  {this.state.raca.valorForca + this.state.classe.valorForca}
+                </td>
               </tr>
               <tr>
                 <td>Agilidade</td>
-                <td>{this.state.forca}</td>
-                <td>{this.state.forca}</td>
+                <td>{this.state.raca.valorAgilidade}</td>
+                <td>{this.state.classe.valorAgilidade}</td>
+                <td>
+                  {this.state.raca.valorAgilidade + this.state.classe.valorAgilidade}
+                </td>
               </tr>
               <tr>
                 <td>Inteligência</td>
-                <td>{this.state.forca}</td>
-                <td>{this.state.forca}</td>
+                <td>{this.state.raca.valorInteligencia}</td>
+                <td>{this.state.classe.valorInteligencia}</td>
+                <td>
+                  {this.state.raca.valorInteligencia + this.state.classe.valorInteligencia}
+                </td>
               </tr>
               <tr>
                 <td>Vontade</td>
-                <td>{this.state.forca}</td>
-                <td>{this.state.forca}</td>
+                <td>{this.state.raca.valorVontade}</td>
+                <td>{this.state.classe.valorVontade}</td>
+                <td>
+                  {this.state.raca.valorVontade + this.state.classe.valorVontade}
+                </td>
               </tr>
             </tbody>
           </Table>
