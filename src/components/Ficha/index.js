@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+// Bootstrap
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 
 // Componentes
@@ -21,11 +22,17 @@ export default class Ficha extends Component {
       //Dados Básicos
       nomeJogador: "",
       nomePersonagem: "",
-      nivel: 1,
       motivacao: "",
+      //valorRaca: "Anão",
+      valorClasse: "Anão",
+      valorNivel: "1",
 
       raca: this.getObjetoVazio(),
       classe: this.getObjetoVazio(),
+      nivel: {
+        id: 1,
+        nome: 1
+      },
 
       // Atributos
       forca: 0,
@@ -39,6 +46,7 @@ export default class Ficha extends Component {
       habilidades: [],
       equipamentos: [],
 
+      // Listas das combos
       listaClasses: [],
       listaRacas: [],
       niveis: []
@@ -67,7 +75,8 @@ export default class Ficha extends Component {
 
     if (!nomeRaca) {
       this.setState({
-        raca: this.getObjetoVazio()
+        raca: this.getObjetoVazio(),
+        //valorRaca: "Anão"
       });
       return;
     }
@@ -126,7 +135,7 @@ export default class Ficha extends Component {
             <Col sm={5}>
               <ComboBox
                 label="Raça"
-                value={this.state.raca}
+                value={this.state.valorRaca}
                 onChange={this.onChangeRaca}
                 lista={this.state.listaRacas}
               />
@@ -134,7 +143,7 @@ export default class Ficha extends Component {
             <Col sm={5}>
               <ComboBox
                 label="Classe"
-                value={this.state.classe}
+                value={this.state.valorClasse}
                 onChange={this.onChangeClasse}
                 lista={this.state.listaClasses}
               />
@@ -142,7 +151,7 @@ export default class Ficha extends Component {
             <Col sm={2}>
               <ComboBox
                 label="Nível"
-                value={this.state.nivel}
+                value={this.state.valorNivel}
                 onChange={e => this.setState({ nivel: e.target.value })}
                 lista={this.state.niveis}
               />
