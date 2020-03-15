@@ -77,10 +77,21 @@ export default class Ficha extends Component {
 
     let habilidades = this.state.listaHabilidades
       .filter(h =>
-        h.nivel <= nivel 
-        && h.racas.find(r => r.id === raca.id) 
+        h.nivel <= nivel
+        && h.racas.find(r => r.id === raca.id)
         && h.classes.find(c => c.id === classe.id)
-      );
+      ).sort(function (a, b) {
+        if (a.nome > b.nome) {
+          return 1;
+        }
+        if (a.nome < b.nome) {
+          return -1;
+        }
+        // a must be equal to b
+        return 0;
+      });
+
+    console.log(habilidades)
 
     this.setState({ listaHabilidadesValidas: habilidades })
   }
