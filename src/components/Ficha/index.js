@@ -12,6 +12,8 @@ import TableAtributos from "../TableAtributos";
 // API
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
+import { fetchHabilidades } from "../../service/habilidade-api";
+import { fetchEquipamentos } from "../../service/equipamento-api";
 import { fetchNiveis } from "../../service/nivel-api";
 
 export default class Ficha extends Component {
@@ -25,14 +27,9 @@ export default class Ficha extends Component {
       motivacao: "",
       //valorRaca: "Anão",
       valorClasse: "Anão",
-      valorNivel: "1",
-
+      nivel: undefined,
       raca: this.getObjetoVazio(),
       classe: this.getObjetoVazio(),
-      nivel: {
-        id: 1,
-        nome: 1
-      },
 
       // Atributos
       forca: 0,
@@ -47,15 +44,20 @@ export default class Ficha extends Component {
       equipamentos: [],
 
       // Listas das combos
-      listaClasses: [],
       listaRacas: [],
-      niveis: []
+      listaClasses: [],
+      listaHabilidades: [],
+      listaEquipamentos: [],
+
+      listaHabilidadesValidas: [],
     };
   }
 
   componentDidMount() {
     fetchRacas().then(res => this.setState({ listaRacas: res.data }));
     fetchClasses().then(res => this.setState({ listaClasses: res.data }));
+    fetchHabilidades().then(res => this.setState({ listaHabilidades: res.data }));
+    fetchEquipamentos().then(res => this.setState({ listaEquipamentos: res.data }));
     this.setState({ niveis: fetchNiveis() });
   }
 
@@ -70,19 +72,34 @@ export default class Ficha extends Component {
     };
   };
 
+  calcularHabilidadesValidas = () => {
+    const { nivel, raca, classe } = this.state;
+
+    let listaHabilidadesNivel = this.state.listaHabilidades
+      .filter(h =>
+        h.nivel <= nivel &&
+        h.racas.find(r=>r.id === raca.id)
+      );
+
+
+    console.log(listaHabilidadesNivel)
+    //let listaHabilidadesValidas = [listaHabilidadesNivel];
+
+    this.setState({ listaHabilidadesValidas: listaHabilidadesNivel })
+  }
+
   onChangeRaca = event => {
     const nomeRaca = event.target.value;
 
     if (!nomeRaca) {
       this.setState({
         raca: this.getObjetoVazio(),
-        //valorRaca: "Anão"
       });
       return;
     }
 
     let raca = this.state.listaRacas.find(raca => raca.nome === nomeRaca);
-    this.setState({ raca: raca });
+    this.setState({ raca: raca }, this.calcularHabilidadesValidas);
   };
 
   onChangeClasse = event => {
@@ -99,7 +116,12 @@ export default class Ficha extends Component {
       classe => classe.nome === nomeClasse
     );
 
-    this.setState({ classe: classe });
+    this.setState({ classe: classe }, this.calcularHabilidadesValidas);
+  };
+
+  onChangeNivel = event => {
+    const nivel = event.target.value;
+    this.setState({ nivel: nivel }, this.calcularHabilidadesValidas);
   };
 
   onFormSubmit = event => {
@@ -149,12 +171,21 @@ export default class Ficha extends Component {
               />
             </Col>
             <Col sm={2}>
-              <ComboBox
-                label="Nível"
-                value={this.state.valorNivel}
-                onChange={e => this.setState({ nivel: e.target.value })}
-                lista={this.state.niveis}
-              />
+              <Form.Group>
+                <Form.Label>Nível</Form.Label>
+                <Form.Control
+                  as="select"
+                  onChange={this.onChangeNivel}
+                  value={this.state.nivel}
+                >
+                  <option></option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </Form.Control>
+              </Form.Group>
             </Col>
           </Row>
           <Row>
@@ -170,6 +201,21 @@ export default class Ficha extends Component {
             </Col>
             <Col sm={2}>
               <TextBoxDisabled label="Mana" value={this.state.mana} />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm={5}>
+              <ComboBox
+                label="Equipamentos"
+                lista={this.state.listaEquipamentos}
+              />
+            </Col>
+            <Col sm={5}>
+              <ComboBox
+                label="Habilidades"
+                lista={this.state.listaHabilidadesValidas}
+              />
             </Col>
           </Row>
 
