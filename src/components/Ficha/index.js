@@ -75,17 +75,14 @@ export default class Ficha extends Component {
   calcularHabilidadesValidas = () => {
     const { nivel, raca, classe } = this.state;
 
-    let listaHabilidadesNivel = this.state.listaHabilidades
+    let habilidades = this.state.listaHabilidades
       .filter(h =>
-        h.nivel <= nivel &&
-        h.racas.find(r=>r.id === raca.id)
+        h.nivel <= nivel 
+        && h.racas.find(r => r.id === raca.id) 
+        && h.classes.find(c => c.id === classe.id)
       );
 
-
-    console.log(listaHabilidadesNivel)
-    //let listaHabilidadesValidas = [listaHabilidadesNivel];
-
-    this.setState({ listaHabilidadesValidas: listaHabilidadesNivel })
+    this.setState({ listaHabilidadesValidas: habilidades })
   }
 
   onChangeRaca = event => {
