@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 
 class ComboBox extends React.Component {
   render() {
@@ -10,7 +10,7 @@ class ComboBox extends React.Component {
       <>
         <Form.Group>
           <Form.Label>{this.props.label}</Form.Label>
-          <Form.Control
+          <Form.Control size="sm"
             as="select"
             defaultValue={this.props.value}
             onChange={this.props.onChange}

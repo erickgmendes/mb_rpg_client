@@ -9,7 +9,7 @@ class TextBoxDisabled extends React.Component {
       <>
         <Form.Group>
           <Form.Label>{this.props.label}</Form.Label>
-          <Form.Control disabled value={this.props.value} />
+          <Form.Control size="sm" disabled value={this.props.value} />
         </Form.Group>
       </>
     );

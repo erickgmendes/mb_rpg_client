@@ -9,48 +9,49 @@ class TableAtributos extends React.Component {
       <>
         <h5>Atributos</h5>
 
-        <Table responsive>
+        <Table striped bordered hover size="sm">
           <thead>
             <tr>
               <th>#</th>
-              <th>valor raça</th>
-              <th>valor classe</th>
-              <th>valor total</th>
+              <th>Força</th>
+              <th>Agilidade</th>
+              <th>Inteligência</th>
+              <th>Vontade</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Força</td>
+              <td>valor raça</td>
               <td>{this.props.raca.valorForca}</td>
-              <td>{this.props.classe.valorForca}</td>
-              <td>
-                {this.props.raca.valorForca + this.props.classe.valorForca}
-              </td>
+              <td>{this.props.raca.valorAgilidade}</td>
+              <td>{this.props.raca.valorInteligencia}</td>
+              <td>{this.props.raca.valorVontade}</td>
             </tr>
             <tr>
-              <td>Agilidade</td>
-              <td>{this.props.raca.valorAgilidade}</td>
+              <td>valor classe</td>
+              <td>{this.props.classe.valorForca}</td>
               <td>{this.props.classe.valorAgilidade}</td>
+              <td>{this.props.classe.valorInteligencia}</td>
+              <td>{this.props.classe.valorVontade}</td>
+            </tr>
+            <tr>
+              <td>valor total</td>
+              <td>
+                {this.props.raca.valorForca +
+                  this.props.classe.valorForca}
+              </td>
               <td>
                 {this.props.raca.valorAgilidade +
                   this.props.classe.valorAgilidade}
               </td>
-            </tr>
-            <tr>
-              <td>Inteligência</td>
-              <td>{this.props.raca.valorInteligencia}</td>
-              <td>{this.props.classe.valorInteligencia}</td>
+
               <td>
                 {this.props.raca.valorInteligencia +
                   this.props.classe.valorInteligencia}
               </td>
-            </tr>
-            <tr>
-              <td>Vontade</td>
-              <td>{this.props.raca.valorVontade}</td>
-              <td>{this.props.classe.valorVontade}</td>
               <td>
-                {this.props.raca.valorVontade + this.props.classe.valorVontade}
+                {this.props.raca.valorVontade +
+                  this.props.classe.valorVontade}
               </td>
             </tr>
           </tbody>

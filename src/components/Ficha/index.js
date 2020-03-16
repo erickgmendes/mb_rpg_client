@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 // Bootstrap
-import { Container, Form, Row, Col, Button } from "react-bootstrap";
+import { InputGroup, Container, Form, Row, Col, Button } from "react-bootstrap";
 
 // Componentes
 import TextBox from "../TextBox";
@@ -183,6 +183,7 @@ export default class Ficha extends Component {
                 <Form.Label>Nível</Form.Label>
                 <Form.Control
                   as="select"
+                  size="sm"
                   onChange={this.onChangeNivel}
                   value={this.state.nivel}
                 >
@@ -192,6 +193,11 @@ export default class Ficha extends Component {
                   <option>3</option>
                   <option>4</option>
                   <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -213,13 +219,14 @@ export default class Ficha extends Component {
           </Row>
 
           <Row>
-            <Col sm={5}>
-              <ComboBox
-                label="Equipamentos"
-                lista={this.state.listaEquipamentos}
-              />
+            <Col sm={12}>
+              <TableAtributos raca={this.state.raca} classe={this.state.classe} />
             </Col>
-            <Col sm={5}>
+          </Row>
+
+
+          <Row>
+            <Col sm={12}>
               <ComboBox
                 label="Habilidades"
                 lista={this.state.listaHabilidadesValidas}
@@ -227,7 +234,15 @@ export default class Ficha extends Component {
             </Col>
           </Row>
 
-          <TableAtributos raca={this.state.raca} classe={this.state.classe} />
+          <Row>
+            <Col sm={5}>
+              <ComboBox
+                label="Equipamentos"
+                lista={this.state.listaEquipamentos}
+              />
+            </Col>
+          </Row>
+
 
           <br />
           <Button variant="primary" type="submit">

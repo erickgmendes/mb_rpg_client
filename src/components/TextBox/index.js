@@ -6,7 +6,7 @@ const TextBox = props => (
   <>
     <Form.Group>
       <Form.Label>{props.label}</Form.Label>
-      <Form.Control value={props.value} onChange={props.onChange} />
+      <Form.Control size="sm" value={props.value} onChange={props.onChange} />
     </Form.Group>
   </>
 );
