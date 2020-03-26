@@ -228,7 +228,7 @@ export default class Ficha extends Component {
           <Row>
             <Col sm={12}>
               <ComboBox
-                label="Habilidades"
+                label={`Habilidades ${this.state.listaHabilidadesValidas.length}`}
                 lista={this.state.listaHabilidadesValidas}
               />
             </Col>
