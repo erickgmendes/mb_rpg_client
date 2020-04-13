@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 
 // Bootstrap
-import { InputGroup, Container, Form, Row, Col, Button } from "react-bootstrap";
+import { Container, Form, Row, Col, Button } from "react-bootstrap";
 
 // Componentes
 import TextBox from "../TextBox";
 import ComboBox from "../ComboBox";
 import TextBoxDisabled from "../TextBoxDisabled";
 import TableAtributos from "../TableAtributos";
+import TableHabilidades from "../TableHabilidades";
+
 
 // API
 import { fetchRacas } from "../../service/raca-api";
@@ -17,8 +19,9 @@ import { fetchEquipamentos } from "../../service/equipamento-api";
 import { fetchNiveis } from "../../service/nivel-api";
 
 export default class Ficha extends Component {
-  constructor(props) {
-    super(props);
+  
+  constructor(props) {    
+    super(props);    
 
     this.state = {
       //Dados Básicos
@@ -26,8 +29,8 @@ export default class Ficha extends Component {
       nomePersonagem: "",
       motivacao: "",
       //valorRaca: "Anão",
-      valorClasse: "Anão",
-      nivel: undefined,
+      //valorClasse: "Anão",
+      nivel: 1,
       raca: this.getObjetoVazio(),
       classe: this.getObjetoVazio(),
 
@@ -132,6 +135,25 @@ export default class Ficha extends Component {
     this.setState({ nivel: nivel }, this.calcularHabilidadesValidas);
   };
 
+  onClickAddHabilidade = event => {
+    let itemSelecionado = event.target.value
+    console.log("Novo: " + itemSelecionado)
+    
+    //this.setState(itemSelecionado)
+    //return this.state.itemSelecionado;
+
+/*    
+    const habilidadeSelecionada = event.target.value;
+
+    console.log(event.target)
+
+    if (!habilidadeSelecionada)
+      console.log("Escolha pelo menos um item")
+    else
+      console.log(habilidadeSelecionada)
+      */
+  }
+
   onFormSubmit = event => {
     event.preventDefault();
     console.log(this.state);
@@ -217,34 +239,32 @@ export default class Ficha extends Component {
               <TextBoxDisabled label="Mana" value={this.state.mana} />
             </Col>
           </Row>
-
           <Row>
             <Col sm={12}>
               <TableAtributos raca={this.state.raca} classe={this.state.classe} />
             </Col>
           </Row>
-
-
           <Row>
-            <Col sm={12}>
-              <ComboBox
-                label={`Habilidades ${this.state.listaHabilidadesValidas.length}`}
-                lista={this.state.listaHabilidadesValidas}
+            <Col sm={6}>
+
+              <TableHabilidades
+                raca={this.state.raca}
+                classe={this.state.classe}
+                nivel={this.state.nivel}
+                listaHabilidades={this.state.listaHabilidadesValidas}
+                itemSelecionado={{}}                
               />
-            </Col>
-          </Row>
-
-          <Row>
-            <Col sm={5}>
+'            </Col>
+            <Col sm={6}>
               <ComboBox
                 label="Equipamentos"
                 lista={this.state.listaEquipamentos}
               />
             </Col>
           </Row>
-
-
-          <br />
+          <br /> 
+        </Container>
+        <Container>
           <Button variant="primary" type="submit">
             Submit
           </Button>
