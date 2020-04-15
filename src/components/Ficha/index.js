@@ -19,9 +19,9 @@ import { fetchEquipamentos } from "../../service/equipamento-api";
 import { fetchNiveis } from "../../service/nivel-api";
 
 export default class Ficha extends Component {
-  
-  constructor(props) {    
-    super(props);    
+
+  constructor(props) {
+    super(props);
 
     this.state = {
       //Dados Básicos
@@ -46,6 +46,8 @@ export default class Ficha extends Component {
       habilidades: [],
       equipamentos: [],
 
+      habilidadeSelecionada: {},
+      showModalHabilidade: false,
       // Listas das combos
       listaRacas: [],
       listaClasses: [],
@@ -53,6 +55,7 @@ export default class Ficha extends Component {
       listaEquipamentos: [],
 
       listaHabilidadesValidas: [],
+      habilidadesEscolhidas: []
     };
   }
 
@@ -135,23 +138,37 @@ export default class Ficha extends Component {
     this.setState({ nivel: nivel }, this.calcularHabilidadesValidas);
   };
 
-  onClickAddHabilidade = event => {
-    let itemSelecionado = event.target.value
-    console.log("Novo: " + itemSelecionado)
-    
-    //this.setState(itemSelecionado)
-    //return this.state.itemSelecionado;
+  onChangeHabilidade = event => {
+    let nomeHabilidade = event.target.value
+    let habilidade = this.state.listaHabilidadesValidas.filter(h => h.nome === nomeHabilidade)[0]
+    this.setState({ habilidadeSelecionada: habilidade });
+  }
 
-/*    
-    const habilidadeSelecionada = event.target.value;
+  onAddHabilidade = event => {
+    let { habilidadesEscolhidas, habilidadeSelecionada } = this.state
+    habilidadesEscolhidas.push(habilidadeSelecionada)
+    this.setState({
+      showModalHabilidade: false,
+      habilidadesEscolhidas: habilidadesEscolhidas
+    })
+  }
 
-    console.log(event.target)
+  onDeleteHabilidade = event => {
+    let nomeHabilidade = event.target.value;
+    let habilidade = this.state.listaHabilidadesValidas.filter(h => h.nome === nomeHabilidade)[0]
 
-    if (!habilidadeSelecionada)
-      console.log("Escolha pelo menos um item")
-    else
-      console.log(habilidadeSelecionada)
-      */
+    let { habilidadesEscolhidas } = this.state
+    habilidadesEscolhidas.splice(habilidadesEscolhidas.indexOf(habilidade), 1)
+
+    this.setState({ habilidadesEscolhidas: habilidadesEscolhidas });
+  }
+
+  onClickShowModal = event => {
+    if (this.state.listaHabilidadesValidas.length === 0) return
+    if (this.state.habilidadesEscolhidas.length === 5) return
+
+    const { showModalHabilidade } = this.state
+    this.setState({ showModalHabilidade: !showModalHabilidade })
   }
 
   onFormSubmit = event => {
@@ -251,8 +268,15 @@ export default class Ficha extends Component {
                 raca={this.state.raca}
                 classe={this.state.classe}
                 nivel={this.state.nivel}
+                showModalHabilidade={this.state.showModalHabilidade}
+                habilidadesEscolhidas={this.state.habilidadesEscolhidas}
+                itemSelecionado={this.state.habilidadeSelecionada}
                 listaHabilidades={this.state.listaHabilidadesValidas}
-                itemSelecionado={{}}                
+
+                onClickShowModal={this.onClickShowModal}
+                onChangeHabilidade={this.onChangeHabilidade}
+                onAddHabilidade={this.onAddHabilidade}
+                onDeleteHabilidade={this.onDeleteHabilidade}
               />
 '            </Col>
             <Col sm={6}>
@@ -262,7 +286,7 @@ export default class Ficha extends Component {
               />
             </Col>
           </Row>
-          <br /> 
+          <br />
         </Container>
         <Container>
           <Button variant="primary" type="submit">
