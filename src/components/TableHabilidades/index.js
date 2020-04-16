@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form, Button, Table, Modal } from "react-bootstrap";
+import { Form, Button, Table, Modal, Card } from "react-bootstrap";
 
 class TableHabilidades extends React.Component {
 
@@ -11,13 +11,13 @@ class TableHabilidades extends React.Component {
                 <h5>Habilidades</h5>
                 <Table striped bordered hover size="sm">
                     <tbody>
-                        {this.props.habilidadesEscolhidas.map(item => (
+                        {this.props.listaHabilidadesEscolhidas.map(item => (
                             <tr key={item.id}>
                                 <td>{item.nome}</td>
                                 <td>
-                                    <Button 
-                                        size="sm" 
-                                        variant="danger" 
+                                    <Button
+                                        size="sm"
+                                        variant="danger"
                                         value={item.nome}
                                         onClick={this.props.onDeleteHabilidade}
                                     >excluir
@@ -26,9 +26,9 @@ class TableHabilidades extends React.Component {
                         ))}
                     </tbody>
                 </Table>
-                <Button 
-                    size="sm" 
-                    variant="outline-secondary" 
+                <Button
+                    size="sm"
+                    variant="outline-secondary"
                     onClick={this.props.onClickShowModal}
                 >adicionar
                 </Button>
@@ -46,32 +46,49 @@ class TableHabilidades extends React.Component {
                     <Modal.Body>
                         <Form.Group>
                             <Form.Label>Habilidade</Form.Label>
-                            <Form.Control 
-                                as="select" 
+                            <Form.Control
+                                as="select"
                                 onChange={this.props.onChangeHabilidade}
                             >
                                 <option key="0" />
-                                {this.props.listaHabilidades.map(item => (
+                                {this.props.listaHabilidadesValidas.map(item => (
                                     <option key={item.id}>{item.nome}</option>
                                 ))}
                             </Form.Control>
                         </Form.Group>
+
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>{this.props.itemSelecionado.nome} ({this.props.itemSelecionado.tipoHabilidade})</Card.Title>
+                                <Card.Title>Descrição</Card.Title>
+                                <Card.Text>
+                                    {this.props.itemSelecionado.descricao}
+                                </Card.Text>
+                                <Card.Title>Especial</Card.Title>
+                                <Card.Text>
+                                    {this.props.itemSelecionado.especial}
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+
+
+
                         <Form.Group>
                             <Form.Label>Descrição</Form.Label>
                             <Form.Label>{this.props.itemSelecionado.descricao}</Form.Label>
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button 
-                            size="sm" 
-                            variant="success" 
+                        <Button
+                            size="sm"
+                            variant="success"
                             onClick={this.props.onAddHabilidade}
                         >
-                        adicionar
+                            adicionar
                         </Button>
-                        <Button 
-                            size="sm" 
-                            variant="secondary" 
+                        <Button
+                            size="sm"
+                            variant="secondary"
                             onClick={this.props.onClickShowModal}
                         >cancelar
                         </Button>

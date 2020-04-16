@@ -10,7 +10,6 @@ import TextBoxDisabled from "../TextBoxDisabled";
 import TableAtributos from "../TableAtributos";
 import TableHabilidades from "../TableHabilidades";
 
-
 // API
 import { fetchRacas } from "../../service/raca-api";
 import { fetchClasses } from "../../service/classe-api";
@@ -28,12 +27,9 @@ export default class Ficha extends Component {
       nomeJogador: "",
       nomePersonagem: "",
       motivacao: "",
-      //valorRaca: "Anão",
-      //valorClasse: "Anão",
       nivel: 1,
       raca: this.getObjetoVazio(),
       classe: this.getObjetoVazio(),
-
       // Atributos
       forca: 0,
       agilidade: 0,
@@ -43,19 +39,16 @@ export default class Ficha extends Component {
       pv: 60,
       mana: 60,
 
-      habilidades: [],
-      equipamentos: [],
-
-      habilidadeSelecionada: {},
-      showModalHabilidade: false,
       // Listas das combos
       listaRacas: [],
       listaClasses: [],
       listaHabilidades: [],
       listaEquipamentos: [],
 
+      showModalHabilidade: false,
+      habilidadeSelecionada: {},
       listaHabilidadesValidas: [],
-      habilidadesEscolhidas: []
+      listaHabilidadesEscolhidas: []
     };
   }
 
@@ -79,7 +72,7 @@ export default class Ficha extends Component {
   };
 
   calcularHabilidadesValidas = () => {
-    const { nivel, raca, classe } = this.state;
+    const { nivel, raca, classe, listaHabilidadesEscolhidas } = this.state;
 
     let habilidades = this.state.listaHabilidades
       .filter(h =>
@@ -95,7 +88,11 @@ export default class Ficha extends Component {
         }
         // a must be equal to b
         return 0;
-      });
+      }
+      );
+
+      // Remove todas as habilidades escolhidas pelo usuário
+    listaHabilidadesEscolhidas.map(item => (habilidades.splice(habilidades.indexOf(item), 1)))
 
     console.log(habilidades)
 
@@ -145,27 +142,32 @@ export default class Ficha extends Component {
   }
 
   onAddHabilidade = event => {
-    let { habilidadesEscolhidas, habilidadeSelecionada } = this.state
-    habilidadesEscolhidas.push(habilidadeSelecionada)
+    let { listaHabilidadesEscolhidas, habilidadeSelecionada } = this.state
+
+    listaHabilidadesEscolhidas.push(habilidadeSelecionada)
+
     this.setState({
       showModalHabilidade: false,
-      habilidadesEscolhidas: habilidadesEscolhidas
-    })
+      listaHabilidadesEscolhidas: listaHabilidadesEscolhidas,
+      habilidadeSelecionada: {}
+    }, this.calcularHabilidadesValidas());
   }
 
   onDeleteHabilidade = event => {
     let nomeHabilidade = event.target.value;
-    let habilidade = this.state.listaHabilidadesValidas.filter(h => h.nome === nomeHabilidade)[0]
+    let { listaHabilidadesEscolhidas, listaHabilidadesValidas } = this.state
+    let habilidade = listaHabilidadesValidas.filter(h => h.nome === nomeHabilidade)[0]
 
-    let { habilidadesEscolhidas } = this.state
-    habilidadesEscolhidas.splice(habilidadesEscolhidas.indexOf(habilidade), 1)
+    listaHabilidadesEscolhidas.splice(listaHabilidadesEscolhidas.indexOf(habilidade), 1)
 
-    this.setState({ habilidadesEscolhidas: habilidadesEscolhidas });
+    this.setState({
+      listaHabilidadesEscolhidas: listaHabilidadesEscolhidas,
+    }, this.calcularHabilidadesValidas());
   }
 
   onClickShowModal = event => {
     if (this.state.listaHabilidadesValidas.length === 0) return
-    if (this.state.habilidadesEscolhidas.length === 5) return
+    if (this.state.listaHabilidadesEscolhidas.length === 5) return
 
     const { showModalHabilidade } = this.state
     this.setState({ showModalHabilidade: !showModalHabilidade })
@@ -269,9 +271,9 @@ export default class Ficha extends Component {
                 classe={this.state.classe}
                 nivel={this.state.nivel}
                 showModalHabilidade={this.state.showModalHabilidade}
-                habilidadesEscolhidas={this.state.habilidadesEscolhidas}
+                listaHabilidadesValidas={this.state.listaHabilidadesValidas}
                 itemSelecionado={this.state.habilidadeSelecionada}
-                listaHabilidades={this.state.listaHabilidadesValidas}
+                listaHabilidadesEscolhidas={this.state.listaHabilidadesEscolhidas}
 
                 onClickShowModal={this.onClickShowModal}
                 onChangeHabilidade={this.onChangeHabilidade}
