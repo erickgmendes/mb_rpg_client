@@ -3,8 +3,11 @@ import React from "react";
 import { Table } from "react-bootstrap";
 
 class TableAtributos extends React.Component {
-  render() {
-    //if (this.props.value === undefined) return <></>;
+  render() {   
+    const {raca, classe} = this.props
+
+    if (raca === undefined || classe === undefined ) return <></>;
+
     return (
       <>
         <h5>Atributos</h5>
@@ -22,23 +25,22 @@ class TableAtributos extends React.Component {
           <tbody>
             <tr>
               <td>valor raça</td>
-              <td>{this.props.raca.valorForca}</td>
-              <td>{this.props.raca.valorAgilidade}</td>
-              <td>{this.props.raca.valorInteligencia}</td>
-              <td>{this.props.raca.valorVontade}</td>
+              <td>{raca.valorForca}</td>
+              <td>{raca.valorAgilidade}</td>
+              <td>{raca.valorInteligencia}</td>
+              <td>{raca.valorVontade}</td>
             </tr>
             <tr>
               <td>valor classe</td>
-              <td>{this.props.classe.valorForca}</td>
-              <td>{this.props.classe.valorAgilidade}</td>
-              <td>{this.props.classe.valorInteligencia}</td>
-              <td>{this.props.classe.valorVontade}</td>
+              <td>{classe.valorForca}</td>
+              <td>{classe.valorAgilidade}</td>
+              <td>{classe.valorInteligencia}</td>
+              <td>{classe.valorVontade}</td>
             </tr>
             <tr>
               <td>valor total</td>
               <td>
-                {this.props.raca.valorForca +
-                  this.props.classe.valorForca}
+                {raca.valorForca + classe.valorForca}
               </td>
               <td>
                 {this.props.raca.valorAgilidade +

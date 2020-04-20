@@ -5,13 +5,30 @@ import { Form, Button, Table, Modal, Card } from "react-bootstrap";
 class TableHabilidades extends React.Component {
 
     render() {
-        //if (this.props.habilidadesEscolhidas === undefined) return <></>;
+        const {
+            raca, 
+            classe,
+            nivel,
+            showModalHabilidade, 
+            listaHabilidadesEscolhidas,
+            listaHabilidadesValidas,
+            itemSelecionado,
+
+            onShowModal,
+            onDeleteHabilidade,
+            onClickShowModal,
+            onChangeHabilidade,
+            onAddHabilidade
+        } = this.props
+
+        if (raca === undefined || classe === undefined) return <></>;
+
         return (
             <>
                 <h5>Habilidades</h5>
                 <Table striped bordered hover size="sm">
                     <tbody>
-                        {this.props.listaHabilidadesEscolhidas.map(item => (
+                        {listaHabilidadesEscolhidas.map(item => (
                             <tr key={item.id}>
                                 <td>{item.nome}</td>
                                 <td>
@@ -19,7 +36,7 @@ class TableHabilidades extends React.Component {
                                         size="sm"
                                         variant="danger"
                                         value={item.nome}
-                                        onClick={this.props.onDeleteHabilidade}
+                                        onClick={onDeleteHabilidade}
                                     >excluir
                                     </Button></td>
                             </tr>
@@ -29,29 +46,29 @@ class TableHabilidades extends React.Component {
                 <Button
                     size="sm"
                     variant="outline-secondary"
-                    onClick={this.props.onClickShowModal}
+                    onClick={onClickShowModal}
                 >adicionar
                 </Button>
                 <Modal
-                    show={this.props.showModalHabilidade}
-                    onHide={this.props.onShowModal}
+                    show={showModalHabilidade}
+                    onHide={onShowModal}
                     animation={false}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>{`Modificar Habilidades (${this.props.raca.nome} - ${this.props.classe.nome} - Nível ${this.props.nivel})`}</Modal.Title>
+                        <Modal.Title>{`Modificar Habilidades (${raca.nome} - ${classe.nome} - Nível ${nivel})`}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form.Group>
                             <Form.Label>Habilidade</Form.Label>
                             <Form.Control
                                 as="select"
-                                onChange={this.props.onChangeHabilidade}
+                                onChange={onChangeHabilidade}
                             >
                                 <option key="0" />
-                                {this.props.listaHabilidadesValidas.map(item => (
+                                {listaHabilidadesValidas.map(item => (
                                     <option key={item.id}>{item.nome}</option>
                                 ))}
                             </Form.Control>
@@ -59,44 +76,41 @@ class TableHabilidades extends React.Component {
 
                         <Card>
                             <Card.Body>
-                                <Card.Title>{this.props.itemSelecionado.nome} ({this.props.itemSelecionado.tipoHabilidade})</Card.Title>
+                                <Card.Title>{itemSelecionado.nome} ({itemSelecionado.tipoHabilidade})</Card.Title>
                                 <Card.Title>Descrição</Card.Title>
                                 <Card.Text>
-                                    {this.props.itemSelecionado.descricao}
+                                    {itemSelecionado.descricao}
                                 </Card.Text>
                                 <Card.Title>Especial</Card.Title>
                                 <Card.Text>
-                                    {this.props.itemSelecionado.especial}
+                                    {itemSelecionado.especial}
                                 </Card.Text>
                             </Card.Body>
                         </Card>
 
-
-
                         <Form.Group>
                             <Form.Label>Descrição</Form.Label>
-                            <Form.Label>{this.props.itemSelecionado.descricao}</Form.Label>
+                            <Form.Label>{itemSelecionado.descricao}</Form.Label>
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button
                             size="sm"
                             variant="success"
-                            onClick={this.props.onAddHabilidade}
+                            onClick={onAddHabilidade}
                         >
                             adicionar
                         </Button>
                         <Button
                             size="sm"
                             variant="secondary"
-                            onClick={this.props.onClickShowModal}
+                            onClick={onClickShowModal}
                         >cancelar
                         </Button>
                     </Modal.Footer>
                 </Modal>
             </>
         );
-    }
-}
+    }}
 
 export default TableHabilidades;

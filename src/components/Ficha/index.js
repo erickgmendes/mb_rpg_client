@@ -28,8 +28,8 @@ export default class Ficha extends Component {
       nomePersonagem: "",
       motivacao: "",
       nivel: 1,
-      raca: this.getObjetoVazio(),
-      classe: this.getObjetoVazio(),
+      raca: undefined,// this.getObjetoVazio(),
+      classe: undefined, // this.getObjetoVazio(),
       // Atributos
       forca: 0,
       agilidade: 0,
@@ -72,31 +72,48 @@ export default class Ficha extends Component {
   };
 
   calcularHabilidadesValidas = () => {
-    const { nivel, raca, classe, listaHabilidadesEscolhidas } = this.state;
+    const { nivel, raca, classe, listaHabilidades } = this.state;
 
-    let habilidades = this.state.listaHabilidades
-      .filter(h =>
-        h.nivel <= nivel
-        && h.racas.find(r => r.id === raca.id)
-        && h.classes.find(c => c.id === classe.id)
-      ).sort(function (a, b) {
-        if (a.nome > b.nome) {
-          return 1;
+    if (raca === undefined || classe === undefined)
+      return
+
+    let listaHabilidadesEscolhidas = []
+
+    if (listaHabilidades !== undefined) {
+      let listaHabilidadesValidas =
+        listaHabilidades.filter(h =>
+          h.nivel <= nivel
+          && h.racas.find(r => r.id === raca.id)
+          && h.classes.find(c => c.id === classe.id)
+        ).sort(function (a, b) {
+          if (a.nome > b.nome) {
+            return 1;
+          }
+          if (a.nome < b.nome) {
+            return -1;
+          }
+          // a must be equal to b
+          return 0;
         }
-        if (a.nome < b.nome) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-      }
-      );
+        );
 
-      // Remove todas as habilidades escolhidas pelo usuário
-    listaHabilidadesEscolhidas.map(item => (habilidades.splice(habilidades.indexOf(item), 1)))
+      let habilidadPadraoRaca =
+        listaHabilidades
+          .filter(h => h.racas.find(r => r.id === raca.id) && h.automatica)[0];
+      if (habilidadPadraoRaca)
+        listaHabilidadesEscolhidas.push(habilidadPadraoRaca)
 
-    console.log(habilidades)
+      let habilidadPadraoclasse =
+        listaHabilidades
+          .filter(h => h.classe.find(c => c.id === classe.id) && h.automatica)[0];
+      if (habilidadPadraoclasse)
+        listaHabilidadesEscolhidas.push(habilidadPadraoclasse)
 
-    this.setState({ listaHabilidadesValidas: habilidades })
+      this.setState({
+        listaHabilidadesValidas: listaHabilidadesValidas,
+        listaHabilidadesEscolhidas: listaHabilidadesEscolhidas
+      })
+    }
   }
 
   onChangeRaca = event => {
@@ -104,7 +121,7 @@ export default class Ficha extends Component {
 
     if (!nomeRaca) {
       this.setState({
-        raca: this.getObjetoVazio(),
+        raca: undefined // this.getObjetoVazio(),
       });
       return;
     }
@@ -118,7 +135,7 @@ export default class Ficha extends Component {
 
     if (!nomeClasse) {
       this.setState({
-        raca: this.getObjetoVazio()
+        raca: undefined // this.getObjetoVazio()
       });
       return;
     }
@@ -179,7 +196,28 @@ export default class Ficha extends Component {
   };
 
   render() {
+    const {
+      nomePersonagem,
+      nomeJogador,
+      raca,
+      classe,
+      nivel,
+      valorRaca,
+      listaRacas,
+      listaClasses,
+      valorClasse,
+      motivacao,
+      pv,
+      mana,
+      showModalHabilidade,
+      listaHabilidadesValidas,
+      habilidadeSelecionada,
+      listaHabilidadesEscolhidas,
+      listaEquipamentos
+    } = this.state
+
     return (
+
       <Form onSubmit={this.onFormSubmit}>
         <Container>
           <h3>Ficha de Personagem</h3>
@@ -188,7 +226,7 @@ export default class Ficha extends Component {
             <Col sm={6}>
               <TextBox
                 label="Nome do Personagem"
-                value={this.state.nomePersonagem}
+                value={nomePersonagem}
                 onChange={e =>
                   this.setState({ nomePersonagem: e.target.value })
                 }
@@ -197,7 +235,7 @@ export default class Ficha extends Component {
             <Col sm={6}>
               <TextBox
                 label="Nome do Jogador"
-                value={this.state.nomeJogador}
+                value={nomeJogador}
                 onChange={e => this.setState({ nomeJogador: e.target.value })}
               />
             </Col>
@@ -206,17 +244,17 @@ export default class Ficha extends Component {
             <Col sm={5}>
               <ComboBox
                 label="Raça"
-                value={this.state.valorRaca}
+                value={valorRaca}
                 onChange={this.onChangeRaca}
-                lista={this.state.listaRacas}
+                lista={listaRacas}
               />
             </Col>
             <Col sm={5}>
               <ComboBox
                 label="Classe"
-                value={this.state.valorClasse}
+                value={valorClasse}
                 onChange={this.onChangeClasse}
-                lista={this.state.listaClasses}
+                lista={listaClasses}
               />
             </Col>
             <Col sm={2}>
@@ -226,7 +264,7 @@ export default class Ficha extends Component {
                   as="select"
                   size="sm"
                   onChange={this.onChangeNivel}
-                  value={this.state.nivel}
+                  value={nivel}
                 >
                   <option></option>
                   <option>1</option>
@@ -247,46 +285,50 @@ export default class Ficha extends Component {
             <Col sm={8}>
               <TextBox
                 label="Motivação"
-                value={this.state.motivacao}
+                value={motivacao}
                 onChange={e => this.setState({ motivacao: e.target.value })}
               />
             </Col>
             <Col sm={2}>
-              <TextBoxDisabled label="PV" value={this.state.pv} />
+              <TextBoxDisabled label="PV" value={pv} />
             </Col>
             <Col sm={2}>
-              <TextBoxDisabled label="Mana" value={this.state.mana} />
+              <TextBoxDisabled label="Mana" value={mana} />
             </Col>
           </Row>
+
           <Row>
             <Col sm={12}>
-              <TableAtributos raca={this.state.raca} classe={this.state.classe} />
+              <TableAtributos raca={raca} classe={classe} />
             </Col>
           </Row>
+
           <Row>
-            <Col sm={6}>
-
+            <Col sm={12}>
               <TableHabilidades
-                raca={this.state.raca}
-                classe={this.state.classe}
-                nivel={this.state.nivel}
-                showModalHabilidade={this.state.showModalHabilidade}
-                listaHabilidadesValidas={this.state.listaHabilidadesValidas}
-                itemSelecionado={this.state.habilidadeSelecionada}
-                listaHabilidadesEscolhidas={this.state.listaHabilidadesEscolhidas}
-
+                raca={raca}
+                classe={classe}
+                nivel={nivel}
+                showModalHabilidade={showModalHabilidade}
+                listaHabilidadesValidas={listaHabilidadesValidas}
+                itemSelecionado={habilidadeSelecionada}
+                listaHabilidadesEscolhidas={listaHabilidadesEscolhidas}
                 onClickShowModal={this.onClickShowModal}
                 onChangeHabilidade={this.onChangeHabilidade}
                 onAddHabilidade={this.onAddHabilidade}
                 onDeleteHabilidade={this.onDeleteHabilidade}
               />
 '            </Col>
-            <Col sm={6}>
+          </Row>
+
+          <Row>
+            <Col sm={12}>
               <ComboBox
                 label="Equipamentos"
-                lista={this.state.listaEquipamentos}
+                lista={listaEquipamentos}
               />
             </Col>
+
           </Row>
           <br />
         </Container>
