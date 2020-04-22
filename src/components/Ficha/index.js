@@ -24,12 +24,11 @@ export default class Ficha extends Component {
 
     this.state = {
       //Dados Básicos
-      nomeJogador: "",
       nomePersonagem: "",
       motivacao: "",
       nivel: 1,
-      raca: undefined,// this.getObjetoVazio(),
-      classe: undefined, // this.getObjetoVazio(),
+      raca: undefined,
+      classe: undefined,
       // Atributos
       forca: 0,
       agilidade: 0,
@@ -55,21 +54,10 @@ export default class Ficha extends Component {
   componentDidMount() {
     fetchRacas().then(res => this.setState({ listaRacas: res.data }));
     fetchClasses().then(res => this.setState({ listaClasses: res.data }));
-    fetchHabilidades().then(res => this.setState({ listaHabilidades: res.data }));
+    // fetchHabilidades().then(res => this.setState({ listaHabilidades: res.data }));
     fetchEquipamentos().then(res => this.setState({ listaEquipamentos: res.data }));
     this.setState({ niveis: fetchNiveis() });
   }
-
-  getObjetoVazio = () => {
-    return {
-      id: 0,
-      nome: "",
-      valorForca: 0,
-      valorAgilidade: 0,
-      valorInteligencia: 0,
-      valorVontade: 0
-    };
-  };
 
   calcularHabilidadesValidas = () => {
     const { nivel, raca, classe, listaHabilidades } = this.state;
@@ -121,7 +109,7 @@ export default class Ficha extends Component {
 
     if (!nomeRaca) {
       this.setState({
-        raca: undefined // this.getObjetoVazio(),
+        raca: undefined
       });
       return;
     }
@@ -135,7 +123,7 @@ export default class Ficha extends Component {
 
     if (!nomeClasse) {
       this.setState({
-        raca: undefined // this.getObjetoVazio()
+        raca: undefined
       });
       return;
     }
@@ -198,7 +186,6 @@ export default class Ficha extends Component {
   render() {
     const {
       nomePersonagem,
-      nomeJogador,
       raca,
       classe,
       nivel,
@@ -223,7 +210,7 @@ export default class Ficha extends Component {
           <h3>Ficha de Personagem</h3>
           <hr />
           <Row>
-            <Col sm={6}>
+            <Col sm={4}>
               <TextBox
                 label="Nome do Personagem"
                 value={nomePersonagem}
@@ -232,16 +219,7 @@ export default class Ficha extends Component {
                 }
               />
             </Col>
-            <Col sm={6}>
-              <TextBox
-                label="Nome do Jogador"
-                value={nomeJogador}
-                onChange={e => this.setState({ nomeJogador: e.target.value })}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={5}>
+            <Col sm={3}>
               <ComboBox
                 label="Raça"
                 value={valorRaca}
@@ -249,7 +227,7 @@ export default class Ficha extends Component {
                 lista={listaRacas}
               />
             </Col>
-            <Col sm={5}>
+            <Col sm={3}>
               <ComboBox
                 label="Classe"
                 value={valorClasse}
@@ -297,29 +275,21 @@ export default class Ficha extends Component {
             </Col>
           </Row>
 
-          <Row>
-            <Col sm={12}>
-              <TableAtributos raca={raca} classe={classe} />
-            </Col>
-          </Row>
+          <TableAtributos raca={raca} classe={classe} />
 
-          <Row>
-            <Col sm={12}>
-              <TableHabilidades
-                raca={raca}
-                classe={classe}
-                nivel={nivel}
-                showModalHabilidade={showModalHabilidade}
-                listaHabilidadesValidas={listaHabilidadesValidas}
-                itemSelecionado={habilidadeSelecionada}
-                listaHabilidadesEscolhidas={listaHabilidadesEscolhidas}
-                onClickShowModal={this.onClickShowModal}
-                onChangeHabilidade={this.onChangeHabilidade}
-                onAddHabilidade={this.onAddHabilidade}
-                onDeleteHabilidade={this.onDeleteHabilidade}
-              />
-'            </Col>
-          </Row>
+          <TableHabilidades
+            raca={raca}
+            classe={classe}
+            nivel={nivel}
+            showModalHabilidade={showModalHabilidade}
+            listaHabilidadesValidas={listaHabilidadesValidas}
+            itemSelecionado={habilidadeSelecionada}
+            listaHabilidadesEscolhidas={listaHabilidadesEscolhidas}
+            onClickShowModal={this.onClickShowModal}
+            onChangeHabilidade={this.onChangeHabilidade}
+            onAddHabilidade={this.onAddHabilidade}
+            onDeleteHabilidade={this.onDeleteHabilidade}
+          />
 
           <Row>
             <Col sm={12}>
