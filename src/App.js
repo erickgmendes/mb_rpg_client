@@ -1,5 +1,5 @@
 import React from 'react';
-import Ficha from './components/Ficha'
+import Ficha from './views/Ficha.js'
 
 function App() {
 

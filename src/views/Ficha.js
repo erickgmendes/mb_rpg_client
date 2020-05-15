@@ -4,18 +4,17 @@ import React, { Component } from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
 
 // Componentes
-import TextBox from "../TextBox";
-import ComboBox from "../ComboBox";
-import TextBoxDisabled from "../TextBoxDisabled";
-import TableAtributos from "../TableAtributos";
-import TableHabilidades from "../TableHabilidades";
+import TableAtributos from "./components/TableAtributos";
+import TableHabilidades from "./components/TableHabilidades";
+import DadosBasicos from "./components/DadosBasicos";
+import ComboBox from "./components/ComboBox";
 
 // API
-import { fetchRacas } from "../../service/raca-api";
-import { fetchClasses } from "../../service/classe-api";
-import { fetchHabilidades } from "../../service/habilidade-api";
-import { fetchEquipamentos } from "../../service/equipamento-api";
-import { fetchNiveis } from "../../service/nivel-api";
+import { fetchRacas } from "../service/raca-api";
+import { fetchClasses } from "../service/classe-api";
+import { fetchHabilidades, fetchHabilidade } from "../service/habilidade-api";
+import { fetchEquipamentos } from "../service/equipamento-api";
+import { fetchNiveis } from "../service/nivel-api";
 
 export default class Ficha extends Component {
 
@@ -24,11 +23,13 @@ export default class Ficha extends Component {
 
     this.state = {
       //Dados Básicos
-      nomePersonagem: "",
+      nome: "",
       motivacao: "",
       nivel: 1,
       raca: undefined,
       classe: undefined,
+      habilidadeRaca: undefined,
+      habilidadeClasse: undefined,
       // Atributos
       forca: 0,
       agilidade: 0,
@@ -52,14 +53,47 @@ export default class Ficha extends Component {
   }
 
   componentDidMount() {
-    fetchRacas().then(res => this.setState({ listaRacas: res.data }));
-    fetchClasses().then(res => this.setState({ listaClasses: res.data }));
-    // fetchHabilidades().then(res => this.setState({ listaHabilidades: res.data }));
-    fetchEquipamentos().then(res => this.setState({ listaEquipamentos: res.data }));
-    this.setState({ niveis: fetchNiveis() });
+    fetchRacas().then(res => this.setState({ listaRacas: res.data }, this.prepararRacaInicial))
+    fetchClasses().then(res => this.setState({ listaClasses: res.data }, this.prepararClasseInicial))
+    fetchEquipamentos().then(res => this.setState({ listaEquipamentos: res.data }))
+
+    fetchHabilidades().then(res => this.setState({ listaHabilidades: res.data }));
+
+    this.setState({ niveis: fetchNiveis() })
+  }
+
+  prepararRacaInicial = () => {
+    const { listaRacas, listaHabilidades } = this.state
+    let raca = listaRacas[0]
+    let idHabilidade = raca.habilidadesRacas.find(r => r.automatica).id
+    let habilidade = fetchHabilidade(idHabilidade)
+
+    this.setState({
+      raca: raca,
+      habilidadesRacas: habilidade
+    })
+  }
+
+  prepararClasseInicial = () => {
+    const { listaClasses } = this.state
+    let classe = listaClasses[0]
+    this.setState({ classe: classe })
+  }
+
+  onChangeNome = event => {
+    this.setState({ nome: event.target.value })
+  }
+
+  onChangeMotivacao = event => {
+    this.setState({ motivacao: event.target.value })
   }
 
   calcularHabilidadesValidas = () => {
+    const { habilidadeRaca, habilidadeClasse } = this.state
+    console.log(habilidadeRaca)
+    console.log(habilidadeClasse)
+  }
+  /*
     const { nivel, raca, classe, listaHabilidades } = this.state;
 
     if (raca === undefined || classe === undefined)
@@ -103,9 +137,11 @@ export default class Ficha extends Component {
       })
     }
   }
+  */
 
   onChangeRaca = event => {
     const nomeRaca = event.target.value;
+    let { habilidadeRaca } = this.state
 
     if (!nomeRaca) {
       this.setState({
@@ -114,26 +150,34 @@ export default class Ficha extends Component {
       return;
     }
 
-    let raca = this.state.listaRacas.find(raca => raca.nome === nomeRaca);
-    this.setState({ raca: raca }, this.calcularHabilidadesValidas);
-  };
+    let raca = this.state.listaRacas.find(raca => raca.nome === nomeRaca)
+    let idHabilidade = raca.habilidadesRacas.find(r => r.automatica).id
+    fetchHabilidade(idHabilidade)
+      .then(res => this.setState({
+        habilidadeRaca: res.data,
+        raca: raca
+      }, this.calcularHabilidadesValidas))
+  }
 
   onChangeClasse = event => {
     const nomeClasse = event.target.value;
+    let { habilidadeClasse } = this.state
 
     if (!nomeClasse) {
       this.setState({
-        raca: undefined
+        classe: undefined
       });
       return;
     }
 
-    let classe = this.state.listaClasses.find(
-      classe => classe.nome === nomeClasse
-    );
-
-    this.setState({ classe: classe }, this.calcularHabilidadesValidas);
-  };
+    let classe = this.state.listaClasses.find(classe => classe.nome === nomeClasse)
+    let idHabilidade = classe.habilidadesClasses.find(r => r.automatica).id
+    fetchHabilidade(idHabilidade)
+      .then(res => this.setState({
+        habilidadeClasse: res.data,
+        classe: classe
+      }, this.calcularHabilidadesValidas))
+  }
 
   onChangeNivel = event => {
     const nivel = event.target.value;
@@ -184,107 +228,43 @@ export default class Ficha extends Component {
   };
 
   render() {
-    const {
-      nomePersonagem,
-      raca,
-      classe,
-      nivel,
-      valorRaca,
-      listaRacas,
-      listaClasses,
-      valorClasse,
-      motivacao,
-      pv,
-      mana,
-      showModalHabilidade,
-      listaHabilidadesValidas,
-      habilidadeSelecionada,
-      listaHabilidadesEscolhidas,
-      listaEquipamentos
-    } = this.state
-
     return (
 
       <Form onSubmit={this.onFormSubmit}>
         <Container>
           <h3>Ficha de Personagem</h3>
           <hr />
-          <Row>
-            <Col sm={4}>
-              <TextBox
-                label="Nome do Personagem"
-                value={nomePersonagem}
-                onChange={e =>
-                  this.setState({ nomePersonagem: e.target.value })
-                }
-              />
-            </Col>
-            <Col sm={3}>
-              <ComboBox
-                label="Raça"
-                value={valorRaca}
-                onChange={this.onChangeRaca}
-                lista={listaRacas}
-              />
-            </Col>
-            <Col sm={3}>
-              <ComboBox
-                label="Classe"
-                value={valorClasse}
-                onChange={this.onChangeClasse}
-                lista={listaClasses}
-              />
-            </Col>
-            <Col sm={2}>
-              <Form.Group>
-                <Form.Label>Nível</Form.Label>
-                <Form.Control
-                  as="select"
-                  size="sm"
-                  onChange={this.onChangeNivel}
-                  value={nivel}
-                >
-                  <option></option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                </Form.Control>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={8}>
-              <TextBox
-                label="Motivação"
-                value={motivacao}
-                onChange={e => this.setState({ motivacao: e.target.value })}
-              />
-            </Col>
-            <Col sm={2}>
-              <TextBoxDisabled label="PV" value={pv} />
-            </Col>
-            <Col sm={2}>
-              <TextBoxDisabled label="Mana" value={mana} />
-            </Col>
-          </Row>
 
-          <TableAtributos raca={raca} classe={classe} />
+          <DadosBasicos
+            nome={this.state.nome}
+            raca={this.state.raca}
+            classe={this.state.classe}
+            listaRacas={this.state.listaRacas}
+            listaClasses={this.state.listaClasses}
+            nivel={this.state.nivel}
+            motivacao={this.state.motivacao}
+            pv={this.state.pv}
+            mana={this.state.mana}
+            onChangeNome={this.onChangeNome}
+            onChangeRaca={this.onChangeRaca}
+            onChangeClasse={this.onChangeClasse}
+            onChangeNivel={this.onChangeNivel}
+            onChangeMotivacao={this.onChangeMotivacao}
+          />
+
+          <TableAtributos
+            raca={this.state.raca}
+            classe={this.state.classe}
+          />
 
           <TableHabilidades
-            raca={raca}
-            classe={classe}
-            nivel={nivel}
-            showModalHabilidade={showModalHabilidade}
-            listaHabilidadesValidas={listaHabilidadesValidas}
-            itemSelecionado={habilidadeSelecionada}
-            listaHabilidadesEscolhidas={listaHabilidadesEscolhidas}
+            raca={this.state.raca}
+            classe={this.state.classe}
+            nivel={this.state.nivel}
+            showModalHabilidade={this.showModalHabilidade}
+            listaHabilidadesValidas={this.state.listaHabilidadesValidas}
+            itemSelecionado={this.state.habilidadeSelecionada}
+            listaHabilidadesEscolhidas={this.state.listaHabilidadesEscolhidas}
             onClickShowModal={this.onClickShowModal}
             onChangeHabilidade={this.onChangeHabilidade}
             onAddHabilidade={this.onAddHabilidade}
@@ -295,11 +275,11 @@ export default class Ficha extends Component {
             <Col sm={12}>
               <ComboBox
                 label="Equipamentos"
-                lista={listaEquipamentos}
+                lista={this.state.listaEquipamentos}
               />
             </Col>
-
           </Row>
+
           <br />
         </Container>
         <Container>
