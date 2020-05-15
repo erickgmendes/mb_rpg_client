@@ -12,7 +12,7 @@ import ComboBox from "./components/ComboBox";
 // API
 import { fetchRacas } from "../service/raca-api";
 import { fetchClasses } from "../service/classe-api";
-import { fetchHabilidades, fetchHabilidade } from "../service/habilidade-api";
+import { fetchHabilidades, fetchHabilidadeRaca, fetchHabilidadeClasse } from "../service/habilidade-api";
 import { fetchEquipamentos } from "../service/equipamento-api";
 import { fetchNiveis } from "../service/nivel-api";
 
@@ -63,21 +63,27 @@ export default class Ficha extends Component {
   }
 
   prepararRacaInicial = () => {
-    const { listaRacas, listaHabilidades } = this.state
+    const { listaRacas } = this.state
     let raca = listaRacas[0]
     let idHabilidade = raca.habilidadesRacas.find(r => r.automatica).id
-    let habilidade = fetchHabilidade(idHabilidade)
 
-    this.setState({
-      raca: raca,
-      habilidadesRacas: habilidade
-    })
+    fetchHabilidadeRaca(idHabilidade)
+      .then(res => this.setState({
+        habilidadeRaca: res.data,
+        raca: raca
+      }, this.calcularHabilidadesValidas))
   }
 
   prepararClasseInicial = () => {
     const { listaClasses } = this.state
     let classe = listaClasses[0]
-    this.setState({ classe: classe })
+    let idHabilidade = classe.habilidadesClasses.find(c => c.automatica).id
+
+    fetchHabilidadeClasse(idHabilidade)
+      .then(res => this.setState({
+        habilidadeClasse: res.data,
+        classe: classe
+      }, this.calcularHabilidadesValidas))
   }
 
   onChangeNome = event => {
@@ -152,7 +158,7 @@ export default class Ficha extends Component {
 
     let raca = this.state.listaRacas.find(raca => raca.nome === nomeRaca)
     let idHabilidade = raca.habilidadesRacas.find(r => r.automatica).id
-    fetchHabilidade(idHabilidade)
+    fetchHabilidadeRaca(idHabilidade)
       .then(res => this.setState({
         habilidadeRaca: res.data,
         raca: raca
@@ -172,7 +178,7 @@ export default class Ficha extends Component {
 
     let classe = this.state.listaClasses.find(classe => classe.nome === nomeClasse)
     let idHabilidade = classe.habilidadesClasses.find(r => r.automatica).id
-    fetchHabilidade(idHabilidade)
+    fetchHabilidadeClasse(idHabilidade)
       .then(res => this.setState({
         habilidadeClasse: res.data,
         classe: classe
