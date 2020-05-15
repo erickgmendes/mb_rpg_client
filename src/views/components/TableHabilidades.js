@@ -4,9 +4,14 @@ import { Form, Button, Table, Modal, Row, Col, Card } from "react-bootstrap";
 
 const TableHabilidades = props => {
 
-    if (props.raca === undefined || props.classe === undefined) {
+    if (props.raca === undefined
+        || props.classe === undefined
+        //|| props.listaHabilidadesEscolhidas === undefined
+        || props.listaHabilidadesEscolhidas.size < 2
+    ) {
         return (<></>)
     }
+
     return (
         <Row>
             <Col sm={12}>
@@ -14,19 +19,19 @@ const TableHabilidades = props => {
                 <Table striped bordered hover size="sm">
                     <tbody>
                         {props.listaHabilidadesEscolhidas.map(item => (
-                            <tr key={item.id}>
-                                <td>{item.nome}</td>
-                                <td>
-                                    <Button
-                                        size="sm"
-                                        variant="danger"
-                                        value={item.nome}
-                                        onClick={props.onDeleteHabilidade}
-                                    >excluir
+                                <tr key={item.id}>
+                                    <td><a href="#" title={item.descricao}>{item.nome}</a></td>
+                                    <td>
+                                        <Button
+                                            size="sm"
+                                            variant="danger"
+                                            value={item.nome}
+                                            onClick={props.onDeleteHabilidade}
+                                        >excluir
                                     </Button>
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </Table>
                 <Button
